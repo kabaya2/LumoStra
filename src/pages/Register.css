@@ -1,0 +1,333 @@
+name=Register.css
+/* Register.css
+   Dark-themed, user-friendly styling with a card-style form wrapper.
+   Palette:
+   - Background / deep slate: #0F1720 (softened from pure black)
+   - Card / row surface: #2F2F31
+   - Accent (lemon/yellow): #FFEA00
+   - Progress green: #8BE13E
+   - Badge blue: #5570A6
+   - Main text: #E6E6E6
+   - Muted text: #AAB0B6
+*/
+
+/* Page baseline */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', Arial, sans-serif;
+  background: radial-gradient(ellipse at 50% 10%, rgba(255,255,255,0.02) 0%, transparent 18%),
+              linear-gradient(180deg, #0F1720 0%, #0A0A0A 100%);
+  background-color: #0F1720; /* fallback */
+  color: #E6E6E6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Page container */
+.register-bg-hero {
+  min-height: 100vh;
+  width: 100vw;
+  background:
+    radial-gradient(ellipse at 50% 10%, rgba(255,255,255,0.02) 0%, transparent 18%),
+    linear-gradient(180deg, rgba(15,23,32,0.35) 0%, rgba(10,10,10,0.6) 100%),
+    #0F1720;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Hide the LanguageSwitcher wrapper inserted via inline style
+   (selector targets the inline style block used in Register.jsx) */
+.register-bg-hero > div[style*="top: 8px"][style*="right: 8px"] {
+  display: none !important;
+}
+
+/* Hide the customer service floating button (CS icon) */
+.customer-service-btn-top {
+  display: none !important;
+}
+
+/* overlay kept but hidden by default */
+.register-bg-overlay {
+  display: none;
+}
+
+/* Logo — positioned top center */
+.register-logo-absolute {
+  position: absolute;
+  top: 68px;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.register-logo-img {
+  display: block;
+  width: auto;
+  height: 100px; /* slightly larger to match screenshot prominence */
+  margin-bottom: 0;
+  pointer-events: auto;
+  opacity: 0.92; /* softer on the background */
+}
+
+/* Centered content column */
+.register-content-centered {
+  margin: 0 auto;
+  margin-top: 200px; /* push content below logo */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 820px; /* slightly wider to match screenshot */
+  padding: 0 20px;
+  box-sizing: border-box;
+  z-index: 5;
+}
+
+/* Title */
+.register-title {
+  color: #E6E6E6;
+  font-size: 30px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 36px;
+  letter-spacing: 0.01em;
+}
+
+/* Form layout (the form element receives a card-like inline style in JSX);
+   these rules provide structure and fallback for non-inline cases */
+.register-form {
+  width: 105%;
+  display: flex;
+  flex-direction: column;
+  gap: -20px; /* vertical spacing between rows */
+  margin-bottom: 38px;
+}
+
+/* --- Input Row: label left, input area right --- */
+.register-input-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: transparent; /* transparent; the card wrapper provides the surface */
+  padding: 18px 8px;
+  box-sizing: border-box;
+  min-height: 72px; /* breathing room */
+  border-bottom: 1px solid rgba(255,255,255,0.03); /* subtle divider across row */
+  position: relative;
+}
+
+/* Left label (vertically centered) */
+.register-label {
+  flex: 0 0 auto;
+  margin: 0;
+  font-weight: 600;
+  font-size: 18px;
+  color: #E6E6E6;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* Right side container (input + visual placeholder) */
+.register-input-placeholder-wrap {
+  flex: 1 1 48%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  min-width: 220px;
+}
+
+/* Input: right-aligned typed text */
+.register-input {
+  width: 72%;
+  max-width: 420px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  font-weight: 700;
+  color: #E6E6E6;
+  background: transparent;
+  padding: 10px 14px;
+  box-sizing: border-box;
+  text-align: right;
+  direction: ltr;
+  letter-spacing: 0.01em;
+  height: 44px;
+  border-radius: 0;
+}
+
+/* Native placeholder hidden (we use visual placeholder span) */
+.register-input::placeholder {
+  color: transparent;
+}
+
+/* Right-aligned label-like placeholder (visual) */
+.register-placeholder {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #AAB0B6;
+  font-size: 16px;
+  font-weight: 500;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  text-align: right;
+  direction: ltr;
+  opacity: 0.95;
+  letter-spacing: 0.01em;
+}
+
+/* Gender row uses same layout; give it more vertical padding */
+.register-gender-row {
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+
+/* Gender group sits on right */
+.register-gender-group {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  justify-content: flex-end;
+  padding-right: 6px;
+}
+
+/* Radio labels */
+.register-radio-label {
+  display: inline-flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: #E6E6E6;
+  cursor: pointer;
+  gap: -20px;
+}
+
+/* radio accent color: use accent for checked indicator */
+.register-radio-label input[type="radio"] {
+  margin-right: 6px;
+  accent-color: #FFEA00;
+}
+
+/* Checkbox row */
+.register-checkbox-row {
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border-radius: 0;
+  padding: 14px 18px;
+  margin-top: 12px;
+  font-size: 16px;
+  color: #E6E6E6;
+  box-sizing: border-box;
+}
+
+.register-checkbox {
+  accent-color: #FFEA00;
+  margin-right: 12px;
+  width: 1.28em;
+  height: 1.28em;
+  border-radius: 2px;
+}
+
+/* Terms link styling (inline under checkbox text) */
+.register-checkbox-label {
+  font-weight: 600;
+  color: #E6E6E6;
+  cursor: pointer;
+}
+.register-link-terms {
+  color: #FFEA00; /* accent */
+  text-decoration: underline;
+  font-weight: 700;
+  margin-left: 6px;
+}
+
+/* Primary register button styled as a large pill (note: we keep CSS and JSX consistent) */
+.register-btn {
+  margin-top: 28px;
+  width: 86%;
+  max-width: 720px;
+  align-self: center;
+  padding: 20px 0;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,234,0,0.98), rgba(255,234,0,0.86));
+  color: #111;
+  font-size: 20px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.12s, box-shadow 0.12s;
+  box-shadow: 0 12px 28px rgba(255,234,0,0.08);
+  letter-spacing: 0.01em;
+}
+.register-btn:hover {
+  filter: brightness(0.98);
+}
+
+/* Bottom link */
+.register-bottom-link {
+  margin-top: 32px;
+  text-align: center;
+  color: #AAB0B6;
+}
+.register-link {
+  color: #FFEA00; /* accent for important link */
+  font-size: 18px;
+  text-decoration: underline;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+/* Autofill appearance tuned for dark rows */
+.register-input:-webkit-autofill,
+.register-input:-webkit-autofill:focus,
+.register-input:-webkit-autofill:hover,
+.register-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #2F2F31 inset !important;
+  box-shadow: 0 0 0 1000px #2F2F31 inset !important;
+  -webkit-text-fill-color: #E6E6E6 !important;
+  color: #E6E6E6 !important;
+  caret-color: #E6E6E6 !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Ensure visual placeholder hidden when input has value */
+.register-input:not(:placeholder-shown) + .register-placeholder,
+.register-input[value]:not([value=""]) + .register-placeholder {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+  .register-content-centered { max-width: 98vw; padding: 0 6vw; margin-top: 220px; }
+  .register-logo-img { height: 105px; }
+  .register-title { font-size: 20px; margin-bottom: 10px; }
+  .register-input-row { padding: 16px 6px; min-height: 26px; gap: 12px; }
+  .register-label { font-size: 16px; }
+  .register-input-placeholder-wrap { flex: 1 1 56%; min-width: 160px; }
+  .register-input { width: 66%; font-size: 15px; }
+  .register-placeholder { font-size: 15px; right: 10px; }
+  .register-btn { width: 96%; font-size: 18px; padding: 14px 0; }
+  .register-bottom-link { margin-top: 2px; }
+}
+
+/* Subtle focus outlines kept usable for accessibility but subtle */
+.register-input:focus {
+  outline: none;
+  box-shadow: none;
+}

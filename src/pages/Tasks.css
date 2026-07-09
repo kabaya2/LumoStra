@@ -1,0 +1,334 @@
+name=Tasks.css
+:root {
+  --db-bg: #0A0A0A;     /* page background (deep black) */
+  --db-card: #2F2F31;   /* card / panel surface (dark gray) */
+  --db-accent: #FFEA00; /* primary lemon / yellow */
+  --db-muted: #AAB0B6;
+  --db-text: #E6E6E6;
+  --glass: rgba(255,255,255,0.03);
+  --soft-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+
+/* Page container: full-bleed dark background */
+.tasks-container {
+  padding: 0;
+  background-color: var(--db-bg);
+  color: var(--db-text);
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* Header area (avatar + welcome) sits on top of a curved dark hero */
+.tasks-hero {
+  position: relative;
+  padding: 28px 18px 10px;
+  z-index: 2;
+}
+
+/* Curved dark background band */
+.tasks-hero-bg {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 340px;
+  background: linear-gradient(180deg, #0A0A0A, #050505);
+  border-bottom-left-radius: 64px;
+  border-bottom-right-radius: 64px;
+  z-index: 0;
+}
+
+/* Header row */
+.tasks-header-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 3;
+}
+
+/* Avatar */
+.tasks-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+  border: 2px solid rgba(255,255,255,0.04);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.6);
+}
+
+/* Welcome text */
+.tasks-welcome {
+  flex: 1;
+  min-width: 0;
+}
+.tasks-welcome h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--db-text);
+  letter-spacing: -0.6px;
+}
+.tasks-welcome p {
+  margin: 6px 0 0 0;
+  font-size: 13px;
+  color: var(--db-muted);
+  line-height: 1.6;
+}
+
+/* VIP badge */
+.tasks-vip {
+  flex-shrink: 0;
+}
+
+/* Wallet cards container */
+.wallet-cards {
+  max-width: 1100px;
+  margin: -48px auto 8px; /* lift cards into hero */
+  padding: 0 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  z-index: 3;
+  position: relative;
+}
+
+/* Card base */
+.wallet-card {
+  background: var(--db-card);
+  color: var(--db-text);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--soft-shadow);
+  border: 1px solid var(--glass);
+  min-height: 108px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Card titles and amounts */
+.card-title { font-weight: 700; font-size: 13.5px; color: var(--db-muted); }
+.card-amount { font-weight: 800; font-size: 26px; color: var(--db-accent); }
+
+/* Carousel area */
+.carousel-wrap {
+  max-width: 1100px;
+  margin: 12px auto 8px;
+  padding: 0 18px 8px;
+  z-index: 2;
+  position: relative;
+}
+
+/* Center diamond and orbiting images */
+.carousel-stage {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  display: block;
+  overflow: visible;
+}
+.carousel-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(140px, 22vw, 220px);
+  height: clamp(140px, 22vw, 220px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+.carousel-center img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+}
+
+/* orbiting items */
+.carousel-orbit-img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: clamp(56px, 10vw, 96px);
+  height: clamp(56px, 10vw, 96px);
+  object-fit: contain;
+  transform-origin: center center;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+  z-index: 10;
+}
+
+/* Start button: large, bright, centered */
+.start-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+  padding: 0 18px 20px;
+}
+.start-button {
+  width: min(640px, 82%);
+  padding: 14px 28px;
+  border-radius: 999px;
+  background: var(--db-accent);
+  color: #111;
+  font-weight: 800;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 12px 36px rgba(255,234,0,0.12);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+.start-button:hover { transform: translateY(-3px); }
+
+/* Notice box */
+.notice-box {
+  max-width: 1100px;
+  margin: 12px auto;
+  padding: 16px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid var(--glass);
+  color: var(--db-text);
+  box-shadow: 0 8px 26px rgba(0,0,0,0.45);
+}
+
+/* Modal overlay (dark themed) */
+.task-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  padding: 18px;
+}
+
+/* Modal card (dark) */
+.task-modal {
+  width: 100%;
+  max-width: 520px;
+  background: var(--db-card);
+  color: var(--db-text);
+  border-radius: 18px;
+  box-shadow: var(--soft-shadow);
+  border: 1px solid var(--glass);
+  overflow: hidden;
+}
+
+/* Modal header */
+.task-modal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+}
+.task-modal .modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--db-text);
+}
+.task-modal .modal-close {
+  background: transparent;
+  border: none;
+  color: var(--db-muted);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Modal body layout */
+.task-modal .modal-body {
+  padding: 12px 18px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.task-modal .modal-thumb {
+  width: clamp(72px, 18vw, 120px);
+  height: clamp(72px, 18vw, 120px);
+  border-radius: 12px;
+  object-fit: cover;
+  background: #111;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+  flex-shrink: 0;
+}
+.task-modal .modal-info { flex: 1; min-width: 0; display:flex; flex-direction:column; gap:8px; }
+
+/* Product name */
+.task-modal .product-name {
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--db-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Price / commission blocks */
+.modal-prices {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+}
+.price-label { color: var(--db-muted); font-weight: 700; font-size: 13px; }
+.price-value { color: var(--db-text); font-weight: 800; font-size: 18px; }
+
+/* Meta rows */
+.modal-meta {
+  padding: 8px 18px;
+  border-top: 1px solid rgba(255,255,255,0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--db-muted);
+  font-size: 13px;
+}
+
+/* Modal actions */
+.modal-actions {
+  padding: 14px 18px 20px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.modal-submit {
+  background: var(--db-accent);
+  color: #111;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 10px 26px rgba(255,234,0,0.12);
+}
+.modal-submit[disabled] { opacity: 0.7; cursor: not-allowed; }
+
+/* Small screens: adapt layout to fit */
+@media (max-width: 840px) {
+  .wallet-cards { grid-template-columns: 1fr; margin: -36px 18px 8px; }
+  .carousel-stage { height: 360px; }
+  .carousel-wrap { padding-bottom: 6px; }
+  .task-modal .modal-body { padding: 12px; gap: 10px; }
+  .task-modal .modal-thumb { width: 98px; height: 98px; }
+  .task-modal { max-width: 92vw; }
+}
+
+/* Very small screens */
+@media (max-width: 420px) {
+  .carousel-stage { height: 300px; }
+  .carousel-center { width: 140px; height: 140px; }
+  .start-button { width: 92%; }
+  .task-modal .product-name { font-size: 16px; }
+  .task-modal .modal-thumb { width: 80px; height: 80px; }
+}

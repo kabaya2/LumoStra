@@ -1,0 +1,938 @@
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useProfile } from "../context/profileContext";
+import CustomerServiceModal from "../components/CustomerServiceModal";
+
+// VIP badge images
+import vip1 from "../assets/images/vip/vip11-removebg-preview.png";
+import vip2 from "../assets/images/vip/vip22-removebg-preview.png";
+import vip3 from "../assets/images/vip/vip333-removebg-preview.png";
+import vip4 from "../assets/images/vip/vip44-removebg-preview.png";
+
+import avatarIcon from "../assets/images/profile/avatar.png";
+import depositIcon from "../assets/images/profile/deposit.png";
+import withdrawIcon from "../assets/images/profile/withdraw.png";
+import personalIcon from "../assets/images/profile/personal.png";
+import walletIcon from "../assets/images/profile/wallet.png";
+import contactIcon from "../assets/images/profile/contact.png";
+import notifIcon from "../assets/images/profile/notif.png";
+
+import NotificationBell from "../components/NotificationBell";
+
+// Bottom nav icons (used for the bottom bar)
+import homeIcon from "../assets/images/tabBar/Homes.png";
+import startingIcon from "../assets/images/tabBar/Start.png";
+import recordsIcon from "../assets/images/tabBar/Record.png";
+import profileIcon from "../assets/images/tabBar/My3.png";
+
+// ---- API domain kept the same as before ----
+const API_URL = "https://digitalblitz-backend.onrender.com";
+
+// --- Platform Palette (match Tasks page) ---
+const START_ACCENT = "#FFEA00";
+const BLACK_BG = "#0A0A0A";
+const CARD_SURFACE = "#2F2F31";
+const TEXT_LIGHT = "#E6E6E6";
+const MUTED = "#AAB0B6";
+const GREEN = "#8BE13E"; // kept available if needed elsewhere
+
+/* Changes in this file:
+   - Transaction item is disabled (no navigation) and visually muted.
+   - Small top spacer restored above profile card.
+   - "100%" indicator positioned to the right of the credit score bar (above the bar line).
+   - Modal buttons/overlays tuned to platform colors.
+   - Added tiny "jumping grey bars" refresh toast that shows for 0.5s when profile refresh is triggered instead of a full white spinner.
+   - Visual refresh shows for 500ms so refresh "takes only a half-second" visually and avoids white flash on navigation/refresh.
+   No other logic or handlers were removed/modified.
+*/
+
+// Grey fading spinner (replaced by small grey jumping bars animation)
+function GreyFadeSpinner() {
+  const barHeights = [8, 14, 10, 16, 12, 9];
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100vw",
+        height: "100vh",
+        background: "rgba(245,247,251,0.9)",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        zIndex: 10000,
+        transition: "opacity 1s",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          gap: 6,
+          alignItems: "flex-end",
+          padding: 8,
+          borderRadius: 8,
+        }}
+        aria-hidden="true"
+      >
+        <style>{`
+          @keyframes jumpSmall {
+            0% { transform: translateY(0); opacity: 0.8; }
+            40% { transform: translateY(-8px); opacity: 1; }
+            100% { transform: translateY(0); opacity: 0.8; }
+          }
+        `}</style>
+
+        {barHeights.map((h, i) => (
+          <div
+            key={i}
+            style={{
+              width: 6,
+              height: h,
+              background: "#111",
+              borderRadius: 6,
+              animation: `jumpSmall 750ms ${i * 0.09}s infinite ease-in-out`,
+              transformOrigin: "center bottom",
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Grey fading message overlay
+function GreyFadeMessage({ message, duration = 600, onDone }) {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (onDone) onDone();
+    }, duration);
+    return () => clearTimeout(timer);
+  }, [duration, onDone]);
+  return (
+    <div
+      style={{
+        position: "fixed",
+        zIndex: 20000,
+        top: 0, left: 0, width: "100vw", height: "100vh",
+        background: "rgba(245,247,251,0.93)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        pointerEvents: "none"
+      }}
+    >
+      <div style={{
+        background: "#e6e6e6",
+        color: "#222",
+        borderRadius: "18px",
+        padding: "1.2rem 2.5rem",
+        fontWeight: 700,
+        opacity: 0.96,
+        fontSize: "1.18rem",
+        boxShadow: "0 2px 16px 0 #0002",
+        textAlign: "center",
+        minWidth: "180px",
+        letterSpacing: "0.01em",
+        animation: "fade-in-out-profile-logout 1s linear"
+      }}>
+        {message}
+      </div>
+      <style>
+        {`
+        @keyframes fade-in-out-profile-logout {
+          0% { opacity: 0; transform: scale(0.98);}
+          10% { opacity: 1; transform: scale(1);}
+          90% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+        `}
+      </style>
+    </div>
+  );
+}
+
+// Tiny jumping grey bars toast component
+function TinyBarsToast({ show, duration = 500 }) {
+  const [visible, setVisible] = useState(show);
+
+  useEffect(() => {
+    let t;
+    if (show) {
+      setVisible(true);
+      t = setTimeout(() => setVisible(false), duration);
+    } else {
+      setVisible(false);
+    }
+    return () => {
+      if (t) clearTimeout(t);
+    };
+  }, [show, duration]);
+
+  if (!visible) return null;
+  return (
+    <div style={{
+      position: "fixed",
+      top: 12,
+      left: "50%",
+      transform: "translateX(-50%)",
+      zIndex: 20001,
+      pointerEvents: "none",
+    }}>
+      <div style={{
+        background: "rgba(255,255,255,0.03)",
+        padding: "6px 10px",
+        borderRadius: 999,
+        boxShadow: "0 6px 18px rgba(0,0,0,0.18)",
+        display: "flex",
+        gap: 6,
+        alignItems: "flex-end",
+        height: 26,
+      }}>
+        <div style={{ width: 4, height: 10, background: "#bdbdbd", borderRadius: 2, animation: "jump 900ms ease-in-out infinite" }} />
+        <div style={{ width: 4, height: 10, background: "#bdbdbd", borderRadius: 2, animation: "jump 900ms ease-in-out 150ms infinite" }} />
+        <div style={{ width: 4, height: 10, background: "#bdbdbd", borderRadius: 2, animation: "jump 900ms ease-in-out 300ms infinite" }} />
+      </div>
+      <style>{`
+        @keyframes jump {
+          0% { transform: translateY(0); opacity: 0.7; }
+          40% { transform: translateY(-6px); opacity: 1; }
+          100% { transform: translateY(0); opacity: 0.7; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+// Logout modal updated to platform dark + lemon confirm
+function LogoutModal({ open, onClose, onLogout }) {
+  if (!open) return null;
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{
+        background: "rgba(0,0,0,0.55)",
+        minHeight: "100vh",
+        minWidth: "100vw",
+        pointerEvents: "auto"
+      }}
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-xs mx-auto rounded-xl shadow-xl"
+        style={{
+          background: CARD_SURFACE,
+          color: TEXT_LIGHT,
+          pointerEvents: "auto",
+          padding: "1.25rem 1.25rem",
+          borderRadius: "14px",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.6)",
+          maxWidth: 360,
+          minWidth: 280,
+          textAlign: "center",
+          border: `1px solid rgba(255,255,255,0.03)`
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div style={{ marginBottom: 6 }}>
+          <span style={{ fontSize: 18, fontWeight: 800, color: TEXT_LIGHT }}>Logout</span>
+        </div>
+        <div style={{ marginBottom: 14 }}>
+          <span style={{ fontSize: 14, color: MUTED }}>Are you sure you want to logout?</span>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 12, marginTop: 6 }}>
+          <button
+            className="flex-1"
+            style={{
+              background: "transparent",
+              color: TEXT_LIGHT,
+              border: "1px solid rgba(255,255,255,0.04)",
+              padding: "10px 6px",
+              fontSize: 16,
+              fontWeight: 600,
+              cursor: "pointer",
+              borderRadius: 8
+            }}
+            onClick={onClose}
+            data-i18n="Cancel"
+          >
+            Cancel
+          </button>
+
+          <button
+            className="flex-1"
+            style={{
+              background: START_ACCENT,
+              color: "#111",
+              border: "none",
+              padding: "10px 6px",
+              fontSize: 16,
+              fontWeight: 800,
+              cursor: "pointer",
+              borderRadius: 8,
+              boxShadow: "0 10px 24px rgba(255,234,0,0.12)"
+            }}
+            onClick={onLogout}
+            data-i18n="Confirm"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Withdraw password modal (updated to platform dark card colors)
+function WithdrawPasswordModalProfile({ open, onClose, onSubmit, withdrawPassword, setWithdrawPassword, errorMsg, submitting }) {
+  if (!open) return null;
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 12000,
+        background: "rgba(0,0,0,0.45)",
+        display: "flex",
+        alignItems: "flex-end",
+        justifyContent: "center",
+        pointerEvents: "auto"
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "100%",
+          maxWidth: 900,
+          background: CARD_SURFACE, // platform dark card
+          borderTopLeftRadius: 18,
+          borderTopRightRadius: 18,
+          padding: 22,
+          boxShadow: "0 -8px 40px rgba(0,0,0,0.6)",
+          border: "1px solid rgba(255,255,255,0.03)",
+          color: TEXT_LIGHT
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+          <div style={{ fontWeight: 700, fontSize: 18, color: TEXT_LIGHT }}>Transaction Password</div>
+          <button
+            onClick={onClose}
+            style={{
+              background: "transparent",
+              border: "none",
+              fontSize: 26,
+              color: MUTED,
+              cursor: "pointer"
+            }}
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+
+        <div style={{ marginTop: 8, marginBottom: 18 }}>
+          <input
+            type="password"
+            value={withdrawPassword}
+            onChange={e => setWithdrawPassword(e.target.value)}
+            placeholder="•••••"
+            style={{
+              width: "100%",
+              padding: "12px 14px",
+              borderRadius: 8,
+              background: "rgba(255,255,255,0.02)", // subtle dark input
+              border: "1px solid rgba(255,255,255,0.03)",
+              fontSize: 16,
+              color: TEXT_LIGHT,
+            }}
+            autoFocus
+            disabled={submitting}
+          />
+        </div>
+
+        {errorMsg && <div style={{ color: "#ff6b6b", marginBottom: 12, fontSize: 13 }}>{errorMsg}</div>}
+
+        <div style={{ padding: "6px 0 12px 0" }}>
+          <button
+            onClick={onSubmit}
+            disabled={submitting}
+            style={{
+              width: "100%",
+              background: START_ACCENT,
+              color: "#111",
+              fontWeight: 800,
+              fontSize: 18,
+              borderRadius: 999,
+              border: "none",
+              padding: "14px 0",
+              cursor: submitting ? "not-allowed" : "pointer",
+              boxShadow: "0 8px 24px rgba(255,234,0,0.12)",
+              opacity: submitting ? 0.9 : 1
+            }}
+          >
+            {submitting ? "Verifying..." : "Submit"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// VIP helper (unchanged)
+function getVipBadgeInfo(vipLevelRaw) {
+  if (vipLevelRaw === undefined || vipLevelRaw === null) return { level: null, badge: null };
+  let lvlNum = null;
+  if (typeof vipLevelRaw === "number") lvlNum = vipLevelRaw;
+  else if (typeof vipLevelRaw === "string") {
+    const m = vipLevelRaw.match(/\d+/);
+    lvlNum = m ? Number(m[0]) : NaN;
+  } else {
+    lvlNum = Number(vipLevelRaw);
+  }
+  if (!Number.isFinite(lvlNum)) return { level: null, badge: null };
+  const level = Math.max(1, Math.min(4, Math.floor(lvlNum)));
+  const map = { 1: vip1, 2: vip2, 3: vip3, 4: vip4 };
+  const badge = map[level] || null;
+  return { level, badge };
+}
+
+export default function Profile() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { profile, fetchProfile, setProfile } = useProfile();
+
+  const [showModal, setShowModal] = useState(false);
+  const [withdrawPassword, setWithdrawPassword] = useState("");
+  const [destination, setDestination] = useState(null);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
+
+  const [showLoading, setShowLoading] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [fadeMsg, setFadeMsg] = useState("");
+
+  const [refreshToast, setRefreshToast] = useState(false);
+  const refreshTimerRef = useRef(null);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty("--db-bg", BLACK_BG);
+    root.style.setProperty("--db-card", CARD_SURFACE);
+    root.style.setProperty("--db-accent", START_ACCENT);
+    root.style.setProperty("--db-text", TEXT_LIGHT);
+    root.style.setProperty("--db-muted", MUTED);
+    root.style.setProperty("--glass", "rgba(255,255,255,0.03)");
+
+    document.body.style.background = `linear-gradient(180deg, ${BLACK_BG}, #000)`;
+    document.body.style.color = TEXT_LIGHT;
+  }, []);
+
+  useEffect(() => {
+    mountedRef.current = true;
+
+    const visualRefresh = (duration = 500) => {
+      if (refreshTimerRef.current) {
+        clearTimeout(refreshTimerRef.current);
+        refreshTimerRef.current = null;
+      }
+      setRefreshToast(true);
+      refreshTimerRef.current = setTimeout(() => {
+        setRefreshToast(false);
+        refreshTimerRef.current = null;
+      }, duration);
+    };
+
+    const run = async () => {
+      visualRefresh(500);
+      try {
+        await fetchProfile();
+      } catch (e) {}
+    };
+    run();
+
+    const onAuthLogin = async () => {
+      visualRefresh(500);
+      try { await fetchProfile(); } catch (e) {}
+    };
+    const onProfileRefresh = async () => {
+      visualRefresh(500);
+      try { await fetchProfile(); } catch (e) {}
+    };
+    const onBalanceChanged = async () => {
+      visualRefresh(500);
+      try { await fetchProfile(); } catch (e) {}
+    };
+    const onAuthLogout = () => {
+      try { localStorage.removeItem("authToken"); localStorage.removeItem("token"); localStorage.removeItem("currentUser"); localStorage.removeItem("userProfile"); } catch (e) {}
+      try { setProfile(null); } catch (e) {}
+      navigate("/login");
+    };
+
+    window.addEventListener("auth:login", onAuthLogin);
+    window.addEventListener("profile:refresh", onProfileRefresh);
+    window.addEventListener("balance:changed", onBalanceChanged);
+    window.addEventListener("auth:logout", onAuthLogout);
+
+    return () => {
+      mountedRef.current = false;
+      if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
+      window.removeEventListener("auth:login", onAuthLogin);
+      window.removeEventListener("profile:refresh", onProfileRefresh);
+      window.removeEventListener("balance:changed", onBalanceChanged);
+      window.removeEventListener("auth:logout", onAuthLogout);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
+
+  useEffect(() => {
+    let mounted = true;
+    const id = setInterval(async () => {
+      if (!mounted) return;
+      try { await fetchProfile(); } catch (e) {}
+    }, 10000);
+    return () => { mounted = false; clearInterval(id); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleProtectedRoute = (targetPath) => {
+    setDestination(targetPath);
+    setWithdrawPassword("");
+    setErrorMsg("");
+    setShowModal(true);
+  };
+
+  const handleSubmitPassword = async () => {
+    setErrorMsg("");
+    setSubmitting(true);
+    try {
+      const token = localStorage.getItem("authToken");
+      const res = await fetch(`${API_URL}/api/verify-withdraw-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Auth-Token": token },
+        body: JSON.stringify({ password: withdrawPassword }),
+      });
+      const data = await res.json();
+      setSubmitting(false);
+      if (data.success) {
+        setShowModal(false);
+        try { await fetchProfile(); } catch (e) {}
+        navigate(destination);
+      } else {
+        setErrorMsg(data.message || "Incorrect withdrawal password.");
+      }
+    } catch (err) {
+      setErrorMsg("Network error. Please try again.");
+      setSubmitting(false);
+    }
+  };
+
+  const handleLogout = () => {
+    setShowLogoutModal(false);
+    setFadeMsg("Logout Success");
+    setTimeout(() => {
+      setFadeMsg("");
+      try {
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("user");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userProfile");
+      } catch (e) {}
+      try { setProfile(null); } catch (e) {}
+      navigate("/login");
+    }, 600);
+  };
+
+  const safeProfile = profile || {
+    username: "",
+    balance: 0,
+    commissionToday: 0,
+    vipLevel: null,
+    inviteCode: "",
+    creditScore: 100
+  };
+
+  const creditValueRaw = (typeof safeProfile.creditScore !== "undefined" && safeProfile.creditScore !== null)
+    ? Number(safeProfile.creditScore)
+    : 100;
+  const creditScore = Number.isFinite(creditValueRaw) ? Math.max(0, Math.min(100, Math.round(creditValueRaw))) : 100;
+  const creditPercentLabel = `${creditScore}%`;
+
+  const vipInfo = getVipBadgeInfo(safeProfile.vipLevel);
+  const fmt = (v) => { const n = Number(v || 0); return Number.isFinite(n) ? n.toFixed(2) : "0.00"; };
+
+  const currentPath = location?.pathname || (typeof window !== "undefined" ? window.location.pathname : "");
+  const isActive = (tabKey) => {
+    if (tabKey === "home") return currentPath === "/" || currentPath === "/dashboard";
+    if (tabKey === "starting") return currentPath.startsWith("/tasks") || currentPath.startsWith("/starting");
+    if (tabKey === "records") return currentPath.startsWith("/records");
+    if (tabKey === "profile") return currentPath.startsWith("/profile");
+    return false;
+  };
+
+  return (
+    <div style={{ background: "var(--db-bg)", minHeight: "100vh", paddingBottom: 84, fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial", color: "var(--db-text)" }}>
+      <style>{`
+        .profile-section-title { font-size: 18px; font-weight: 700; color: var(--db-text); margin: 12px 16px 8px; }
+        .list-card { background: var(--db-card); border-radius: 12px; margin: 0 16px 0 16px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.45); border: 1px solid var(--glass); }
+        .list-item { display: flex; align-items: center; justify-content: space-between; padding: 16px; cursor: pointer; }
+        .list-item-left { display:flex; align-items:center; gap:12px; }
+        .list-item-title { font-size: 15px; font-weight: 700; color: var(--db-text); }
+        .divider { height: 1px; background: rgba(255,255,255,0.02); margin: 0; }
+        .logout-pill { margin: 20px 24px 28px; padding: 14px 20px; border-radius: 999px; text-align:center; background: var(--db-card); color: var(--db-accent); font-weight: 800; font-size: 16px; box-shadow: 0 6px 18px rgba(0,0,0,0.36); cursor: pointer; border: 1px solid var(--glass); }
+        .icon-black { width:20px; height:20px; display:inline-block; }
+        .transaction-disabled { opacity: 0.55; cursor: default; pointer-events: none; color: var(--db-muted); }
+      `}</style>
+
+      <TinyBarsToast show={refreshToast} duration={500} />
+
+      <div style={{ height: 20 }} />
+
+      {/* Profile card with lemon->darker-yellow gradient (as previously requested) */}
+      <div style={{
+        margin: "6px 16px",
+        borderRadius: 14,
+        overflow: "hidden",
+        padding: 12,
+        background: "linear-gradient(90deg, #fff9d6 0%, #ffd24a 100%)",
+        color: "#111",
+        position: "relative",
+        boxShadow: "0 6px 24px rgba(0,0,0,0.12)"
+      }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            <div style={{
+              width: 60, height: 60, borderRadius: "50%",
+              overflow: "hidden", border: "3px solid rgba(0,0,0,0.06)",
+              background: "#00d0c6",
+              display: "flex", alignItems: "center", justifyContent: "center"
+            }}>
+              <img src={avatarIcon} alt="avatar" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </div>
+            <div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: "#111", lineHeight: 1 }}>{safeProfile.username}</div>
+              <div style={{ marginTop: 6, fontSize: 12, color: "rgba(0,0,0,0.65)" }}>
+                <span style={{ opacity: 0.9 }}>Invitation Code:</span> <span style={{ fontWeight: 800 }}>{safeProfile.inviteCode || "N/A"}</span>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+            {vipInfo.badge ? (
+              <img src={vipInfo.badge} alt={`VIP-${vipInfo.level}`} style={{ width: 56, height: 56 }} />
+            ) : vipInfo.level ? (
+              <div style={{ width: 56, height: 56, borderRadius: 12, background: "#2a2a2a", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: 800 }}>
+                VIP{vipInfo.level}
+              </div>
+            ) : (
+              <img src={vip2} alt="VIP" style={{ width: 56, height: 56 }} />
+            )}
+            <div style={{ fontSize: 11, color: "rgba(0,0,0,0.75)", fontWeight: 700 }}>{vipInfo.level ? `VIP${vipInfo.level}` : "VIP"}</div>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 12, position: "relative" }}>
+          <div style={{ color: "rgba(0,0,0,0.75)", fontSize: 13, marginBottom: 8 }}>Credit Score:</div>
+
+          <div style={{ position: "absolute", right: 0, top: 18, transform: "translateY(-50%)", background: "rgba(0,0,0,0.25)", padding: "4px 8px", borderRadius: 8, color: "#fff", fontWeight: 800, fontSize: 12 }}>
+            {creditPercentLabel}
+          </div>
+
+          <div style={{ width: "80%", height: 8, background: "rgba(0,0,0,0.08)", borderRadius: 999 }}>
+            <div style={{ width: `${creditScore}%`, height: "100%", background: "rgba(0,0,0,0.85)", borderRadius: 999, transition: "width 300ms ease" }} />
+          </div>
+
+        </div>
+
+        {/* wallet & commission compact */}
+        <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
+          <div style={{ flex: 1, background: "rgba(0,0,0,0.04)", padding: 10, borderRadius: 10 }}>
+            <div style={{ color: "rgba(0,0,0,0.6)", fontSize: 12, marginBottom: 6 }}>Wallet Amount</div>
+            {/* AMOUNTS: bold black as requested */}
+            <div style={{ fontSize: 16, fontWeight: 900, color: "#000" }}>
+              {fmt(safeProfile.balance)} <span style={{ fontSize: 12, fontWeight: 700, color: "#000" }}>USD</span>
+            </div>
+          </div>
+          <div style={{ flex: 1, background: "rgba(0,0,0,0.04)", padding: 10, borderRadius: 10 }}>
+            <div style={{ color: "rgba(0,0,0,0.6)", fontSize: 12, marginBottom: 6 }}>Commission</div>
+            <div style={{ fontSize: 16, fontWeight: 900, color: "#000" }}>
+              {fmt(safeProfile.commissionToday)} <span style={{ fontSize: 12, fontWeight: 700, color: "#000" }}>USD</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Sections */}
+      <div style={{ marginTop: 28 }}>
+        <div className="profile-section-title">My Financial</div>
+        <div className="list-card" role="list">
+          <div className="list-item" onClick={() => navigate("/deposit")}>
+            <div className="list-item-left">
+              <span
+                className="icon-black"
+                aria-hidden="true"
+                style={{
+                  width: 20,
+                  height: 20,
+                  display: "inline-block",
+                  background: "var(--db-accent)",
+                  WebkitMaskImage: `url(${depositIcon})`,
+                  WebkitMaskSize: "contain",
+                  WebkitMaskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  maskImage: `url(${depositIcon})`,
+                  maskSize: "contain",
+                  maskRepeat: "no-repeat",
+                  maskPosition: "center",
+                }}
+              />
+              <div className="list-item-title">Deposit</div>
+            </div>
+            <div style={{ color: "var(--db-muted)" }}>›</div>
+          </div>
+          <div className="divider" />
+          <div className="list-item" onClick={() => handleProtectedRoute("/withdraw")}>
+            <div className="list-item-left">
+              <span
+                className="icon-black"
+                aria-hidden="true"
+                style={{
+                  width: 20,
+                  height: 20,
+                  display: "inline-block",
+                  background: "var(--db-accent)",
+                  WebkitMaskImage: `url(${withdrawIcon})`,
+                  WebkitMaskSize: "contain",
+                  WebkitMaskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  maskImage: `url(${withdrawIcon})`,
+                  maskSize: "contain",
+                  maskRepeat: "no-repeat",
+                  maskPosition: "center",
+                }}
+              />
+              <div className="list-item-title">Withdraw</div>
+            </div>
+            <div style={{ color: "var(--db-muted)" }}>›</div>
+          </div>
+          <div className="divider" />
+          <div className="list-item transaction-disabled" aria-disabled="true" style={{ cursor: "default", pointerEvents: "none", opacity: 0.55 }}>
+            <div className="list-item-left">
+              <span
+                className="icon-black"
+                aria-hidden="true"
+                style={{
+                  width: 20,
+                  height: 20,
+                  display: "inline-block",
+                  background: "var(--db-accent)",
+                  WebkitMaskImage: `url(${walletIcon})`,
+                  WebkitMaskSize: "contain",
+                  WebkitMaskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  maskImage: `url(${walletIcon})`,
+                  maskSize: "contain",
+                  maskRepeat: "no-repeat",
+                  maskPosition: "center",
+                  opacity: 0.6
+                }}
+              />
+              <div style={{ fontSize: 15, fontWeight: 700, color: "var(--db-muted)" }}>Transaction</div>
+            </div>
+            <div style={{ color: "var(--db-muted)" }}>›</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: 28 }}>
+        <div className="profile-section-title">My Detail</div>
+        <div className="list-card">
+          <div className="list-item" onClick={() => handleProtectedRoute("/personal-info")}>
+            <div className="list-item-left">
+              <span
+                className="icon-black"
+                aria-hidden="true"
+                style={{
+                  width: 20,
+                  height: 20,
+                  display: "inline-block",
+                  background: "var(--db-accent)",
+                  WebkitMaskImage: `url(${personalIcon})`,
+                  WebkitMaskSize: "contain",
+                  WebkitMaskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  maskImage: `url(${personalIcon})`,
+                  maskSize: "contain",
+                  maskRepeat: "no-repeat",
+                  maskPosition: "center",
+                }}
+              />
+              <div style={{ fontSize: 15, fontWeight: 700, color: "var(--db-text)" }}>Personal Information</div>
+            </div>
+            <div style={{ color: "var(--db-muted)" }}>›</div>
+          </div>
+          <div className="divider" />
+          <div className="list-item" onClick={() => handleProtectedRoute("/bind-wallet")}>
+            <div className="list-item-left">
+              <span
+                className="icon-black"
+                aria-hidden="true"
+                style={{
+                  width: 20,
+                  height: 20,
+                  display: "inline-block",
+                  background: "var(--db-accent)",
+                  WebkitMaskImage: `url(${walletIcon})`,
+                  WebkitMaskSize: "contain",
+                  WebkitMaskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  maskImage: `url(${walletIcon})`,
+                  maskSize: "contain",
+                  maskRepeat: "no-repeat",
+                  maskPosition: "center",
+                }}
+              />
+              <div style={{ fontSize: 15, fontWeight: 700, color: "var(--db-text)" }}>Payment Methods</div>
+            </div>
+            <div style={{ color: "var(--db-muted)" }}>›</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: 30 }}>
+        <div className="profile-section-title">Other</div>
+        <div className="list-card">
+          <div className="list-item" onClick={() => setShowContactModal(true)}>
+            <div className="list-item-left">
+              <span
+                className="icon-black"
+                aria-hidden="true"
+                style={{
+                  width: 20,
+                  height: 20,
+                  display: "inline-block",
+                  background: "var(--db-accent)",
+                  WebkitMaskImage: `url(${contactIcon})`,
+                  WebkitMaskSize: "contain",
+                  WebkitMaskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  maskImage: `url(${contactIcon})`,
+                  maskSize: "contain",
+                  maskRepeat: "no-repeat",
+                  maskPosition: "center",
+                }}
+              />
+              <div style={{ fontSize: 15, fontWeight: 700, color: "var(--db-text)" }}>Contact Us</div>
+            </div>
+            <div style={{ color: "var(--db-muted)" }}>›</div>
+          </div>
+          <div className="divider" />
+          <div className="list-item" onClick={() => navigate("/notifications")}>
+            <div className="list-item-left">
+              <span
+                className="icon-black"
+                aria-hidden="true"
+                style={{
+                  width: 20,
+                  height: 20,
+                  display: "inline-block",
+                  background: "var(--db-accent)",
+                  WebkitMaskImage: `url(${notifIcon})`,
+                  WebkitMaskSize: "contain",
+                  WebkitMaskRepeat: "no-repeat",
+                  WebkitMaskPosition: "center",
+                  maskImage: `url(${notifIcon})`,
+                  maskSize: "contain",
+                  maskRepeat: "no-repeat",
+                  maskPosition: "center",
+                }}
+              />
+              <div style={{ fontSize: 15, fontWeight: 700, color: "var(--db-text)" }}>Notifications</div>
+            </div>
+            <div style={{ color: "var(--db-muted)" }}>›</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Logout */}
+      <div>
+        <button
+          onClick={() => setShowLogoutModal(true)}
+          className="logout-pill"
+          style={{
+            display: "block",
+            width: "calc(100% - 48px)",
+            marginLeft: 24,
+            marginRight: 24,
+            background: CARD_SURFACE,
+            color: START_ACCENT,
+            border: `1px solid var(--glass)`
+          }}
+        >
+          Logout
+        </button>
+      </div>
+
+      <div style={{ textAlign: "center", color: "var(--db-muted)", marginTop: 50 }}>2025—2026.</div>
+
+      {/* Bottom Nav (shared component kept out) */}
+      <nav
+        className="fixed"
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 40,
+          background: "linear-gradient(180deg,#111113,#151516)",
+          borderTop: "1px solid rgba(255,255,255,0.03)",
+          boxShadow: "0 -4px 14px rgba(0,0,0,0.35)",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center", height: 64, maxWidth: 1100, margin: "0 auto", padding: "0 8px" }}>
+          <button onClick={() => navigate("/dashboard")} style={{ background: "transparent", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, cursor: "pointer", color: isActive("home") ? "#ffffff" : "#9b9b9b" }}>
+            <img src={homeIcon} alt="Home" style={{ width: 22, height: 22, filter: isActive("home") ? "brightness(0) invert(1)" : "grayscale(100%) brightness(0.75)", opacity: isActive("home") ? 1 : 0.9 }} />
+            <span style={{ fontSize: 12, color: isActive("home") ? "#ffffff" : "#9b9b9b" }}>Home</span>
+          </button>
+
+          <button onClick={() => navigate("/tasks")} style={{ background: "transparent", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, cursor: "pointer", color: isActive("starting") ? "#ffffff" : "#9b9b9b" }}>
+            <img src={startingIcon} alt="Starting" style={{ width: 22, height: 22, filter: isActive("starting") ? "brightness(0) invert(1)" : "grayscale(100%) brightness(0.75)", opacity: isActive("starting") ? 1 : 0.9 }} />
+            <span style={{ fontSize: 12, color: isActive("starting") ? "#ffffff" : "#9b9b9b" }}>Starting</span>
+          </button>
+
+          <button onClick={() => navigate("/records")} style={{ background: "transparent", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, cursor: "pointer", color: isActive("records") ? "#ffffff" : "#9b9b9b" }}>
+            <img src={recordsIcon} alt="Records" style={{ width: 22, height: 22, filter: isActive("records") ? "brightness(0) invert(1)" : "grayscale(100%) brightness(0.75)", opacity: isActive("records") ? 1 : 0.9 }} />
+            <span style={{ fontSize: 12, color: isActive("records") ? "#ffffff" : "#9b9b9b" }}>Records</span>
+          </button>
+
+          <button onClick={() => navigate("/profile")} style={{ background: "transparent", border: "none", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, cursor: "pointer", color: isActive("profile") ? "#ffffff" : "#9b9b9b" }}>
+            <img src={profileIcon} alt="Profile" style={{ width: 22, height: 22, filter: isActive("profile") ? "brightness(0) invert(1)" : "grayscale(100%) brightness(0.75)", opacity: isActive("profile") ? 1 : 0.9 }} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = profileIcon; }} />
+            <span style={{ fontSize: 12, color: isActive("profile") ? "#ffffff" : "#9b9b9b" }}>Profile</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* Modals */}
+      <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onLogout={handleLogout} />
+      <WithdrawPasswordModalProfile
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onSubmit={handleSubmitPassword}
+        withdrawPassword={withdrawPassword}
+        setWithdrawPassword={setWithdrawPassword}
+        errorMsg={errorMsg}
+        submitting={submitting}
+      />
+      {fadeMsg && <GreyFadeMessage message={fadeMsg} duration={600} onDone={() => setFadeMsg("")} />}
+      <CustomerServiceModal open={showContactModal} onClose={() => setShowContactModal(false)} />
+
+      {/* Keep NotificationBell present but not rendered */}
+      <div style={{ display: "none" }}>
+        <NotificationBell />
+      </div>
+    </div>
+  );
+}

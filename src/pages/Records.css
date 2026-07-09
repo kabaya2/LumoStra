@@ -1,0 +1,322 @@
+name=Records.css
+:root {
+  --db-bg: #0A0A0A;     /* page background (deep black) */
+  --db-card: #2F2F31;   /* card / panel surface (dark gray) */
+  --db-accent: #FFEA00; /* primary lemon / yellow */
+  --db-muted: #AAB0B6;
+  --db-text: #E6E6E6;
+  --glass: rgba(255,255,255,0.03);
+}
+
+/* Records.css
+   Dark platform styling:
+   - Uses the platform palette (dark background, dark cards, lemon accent)
+   - Preserves existing class names and layout behavior
+   - Adjusts tabs, cards, badges, and bottom nav to match platform visuals
+*/
+
+/* Page container (background & overall spacing) */
+.records-container {
+  background-color: var(--db-bg);
+  padding: 0.75rem;
+  min-height: 100vh;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+  color: var(--db-text);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* =========================
+   FIXED TABS HEADER
+   ========================= */
+
+.tabs {
+  display: flex;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  gap: 8px;
+  box-sizing: border-box;
+  padding: 0 6px;
+  align-items: flex-end;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px 6px;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--db-text);
+  cursor: pointer;
+  border-radius: 18px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  transition: color 160ms ease, transform 160ms ease;
+  user-select: none;
+  background: transparent;
+}
+
+.tab.active {
+  color: var(--db-accent);
+}
+
+.tab > div {
+  padding-bottom: 12px;
+  border-bottom: 4px solid transparent;
+  transition: border-color 180ms ease, padding-bottom 160ms ease;
+}
+
+.tab.active > div {
+  padding-bottom: 6px;
+  border-bottom-color: var(--db-accent);
+}
+
+.tab:focus {
+  outline: 3px solid rgba(255,255,255,0.04);
+  outline-offset: 2px;
+}
+
+/* =========================
+   RECORD LIST & CARDS
+   ========================= */
+
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 110px; /* room for bottom nav */
+  margin-top: 0;
+  box-sizing: border-box;
+}
+
+/* Date line above each card */
+.record-list > div > .date-line,
+.record-list .date-line {
+  color: var(--db-muted);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 8px 8px;
+}
+
+/* Card wrapper */
+.record-card {
+  background-color: var(--db-card);
+  border-radius: 12px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.6);
+  padding: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 220ms ease, box-shadow 220ms ease;
+  border: 1px solid var(--glass);
+}
+
+/* Slight lift on hover for affordance */
+.record-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 48px rgba(0,0,0,0.7);
+}
+
+/* Top-right status badge container */
+.record-card .status-badge {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 10;
+}
+
+/* Record content: image + info */
+.record-content {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Product image on card */
+.record-img {
+  width: 84px;
+  height: 84px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: #161616;
+  border: 1px solid rgba(255,255,255,0.03);
+  flex: 0 0 84px;
+}
+
+/* Info area (title, price, stars) */
+.record-info {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Title line */
+.record-info .truncate {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--db-text);
+  margin-bottom: 6px;
+  line-height: 1.15;
+  max-height: 2.4em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Secondary price line under title */
+.record-info > div {
+  color: var(--db-muted);
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+/* Stars row */
+.record-info .stars {
+  color: #FFD54A;
+  font-size: 14px;
+}
+
+/* Footer row inside card (Total Amount / Commission) */
+.record-card .card-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  border-top: 1px solid rgba(255,255,255,0.02);
+  padding-top: 12px;
+  margin-top: 10px;
+}
+
+/* Footer labels and values */
+.card-footer .label {
+  color: var(--db-muted);
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.card-footer .value {
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--db-text);
+}
+
+/* Submit button */
+.submit-btn {
+  background-color: var(--db-accent);
+  color: #111;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
+  transition: box-shadow 160ms ease, transform 120ms ease;
+  box-shadow: 0 10px 30px rgba(255,234,0,0.12);
+}
+.submit-btn:active { transform: translateY(1px); }
+.submit-btn:disabled { opacity: 0.7; cursor: default; }
+
+/* No-records fallback */
+.no-records {
+  padding: 12px;
+  color: var(--db-muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* =========================
+   SMALL UI PIECES & ANIMATIONS
+   ========================= */
+
+.animate-fade {
+  animation: fadeEffect 600ms ease;
+}
+@keyframes fadeEffect {
+  0% { opacity: 0.6; transform: translateY(6px); }
+  50% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Small loader */
+.small-loader {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--db-muted);
+  background: rgba(255,255,255,0.02);
+  padding: 8px 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  font-weight: 600;
+}
+.small-loader .dot {
+  width: 14px;
+  height: 14px;
+  border: 3px solid rgba(255,255,255,0.06);
+  border-top-color: var(--db-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* =========================
+   BOTTOM NAV
+   ========================= */
+nav.fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: linear-gradient(180deg,#0b0b0b,#050505);
+  border-top: 1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 -4px 14px rgba(0,0,0,0.35);
+}
+
+nav .nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #9b9b9b;
+  cursor: pointer;
+  padding: 8px 6px;
+}
+nav .nav-item.active {
+  color: var(--db-accent);
+}
+nav .nav-item img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: none;
+}
+
+/* =========================
+   STATUS BADGES
+   ========================= */
+.badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #fff;
+  background: #1f1f1f;
+}
+
+/* record time */
+.record-time {
+  font-size: 13px;
+  color: var(--db-muted);
+  font-weight: 700;
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  .record-img { width: 72px; height: 72px; flex: 0 0 72px; }
+  .tab { font-size: 15px; padding: 8px 4px; }
+  .record-info .truncate { font-size: 16px; }
+  .card-footer .value { font-size: 15px; }
+  .record-list { gap: 10px; padding-bottom: 120px; }
+}

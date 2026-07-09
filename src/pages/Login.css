@@ -1,0 +1,256 @@
+name=Login.css
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', Arial, sans-serif;
+  /* friendly deep-slate background */
+  background: radial-gradient(ellipse at 50% 10%, rgba(255,255,255,0.02) 0%, transparent 18%),
+              linear-gradient(180deg, #0F1720 0%, #0A0A0A 100%);
+  background-color: #0F1720; /* fallback */
+  color: #E6E6E6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.login-bg-hero {
+  min-height: 100vh;
+  width: 100vw;
+  background:
+    radial-gradient(ellipse at 50% 10%, rgba(255,255,255,0.02) 0%, transparent 18%),
+    linear-gradient(180deg, rgba(15,23,32,0.35) 0%, rgba(10,10,10,0.6) 100%),
+    url('/src/assets/images/loginbg/login_bg.png') no-repeat center center;
+  background-size: cover;
+  background-blend-mode: overlay, overlay, normal;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* soft vignette overlay for depth */
+.login-bg-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 6px;
+  background: radial-gradient(60% 60% at 50% 40%, rgba(255,255,255,0.01), transparent 25%),
+              radial-gradient(80% 60% at 50% 90%, rgba(0,0,0,0.40), transparent 40%);
+  mix-blend-mode: multiply;
+  z-index: 1;
+}
+
+/* Absolutely position the logo at the top center (with margin from top) */
+.login-logo-absolute {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.login-logo-img {
+  display: block;
+  width: auto;
+  height: 80px;
+  filter: brightness(0) invert(1);
+  opacity: 0.92;
+  margin-bottom: 0;
+  pointer-events: auto;
+}
+.login-logo-img-white {
+  filter: brightness(0) invert(1) !important;
+}
+
+.login-content-centered {
+  margin: 0 auto;
+  margin-top: 132px; /* push content below logo */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  z-index: 5;
+}
+
+/* Title text */
+.login-title {
+  color: #E6E6E6;
+  font-size: 1.34rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 36px;
+  letter-spacing: 0.01em;
+}
+
+/* The form itself will be styled as a card (note: the JSX form gets inline styles too,
+   but we keep these class rules available for fallback and global consistency) */
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  margin-bottom: 16px;
+}
+
+/* Card-like input rows */
+.login-input-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background: transparent; /* keep input rows transparent inside the card (card provides the surface) */
+  border-radius: 8px;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  min-height: 52px;
+  margin-bottom: 0;
+  position: relative;
+}
+
+.login-label {
+  flex-basis: 39%;
+  flex-shrink: 0;
+  text-align: left;
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: #E6E6E6;
+  padding-left: 20px;
+  background: transparent;
+  z-index: 2;
+  letter-spacing: 0.01em;
+}
+
+.login-input-placeholder-wrap {
+  flex: 1 1 0;
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.login-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #E6E6E6;
+  background: transparent;
+  padding: 16px 20px 16px 20px;
+  box-shadow: none;
+  min-width: 0;
+  text-align: right;
+  direction: ltr;
+  letter-spacing: 0.01em;
+}
+
+.login-input:focus { background: transparent; }
+.login-input::placeholder { color: transparent; }
+
+.login-placeholder {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #AAB0B6;
+  font-size: 1.08rem;
+  font-weight: 600;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+  text-align: right;
+  direction: ltr;
+  letter-spacing: 0.01em;
+}
+
+.login-input:not(:focus):not([value=""]) ~ .login-placeholder,
+.login-input:focus ~ .login-placeholder {
+  opacity: 0;
+}
+
+.right-align { text-align: right; }
+
+/* Primary CTA: softened/translucent lemon yellow with subtle glow */
+.login-btn {
+  margin-top: 27px;
+  width: 100%;
+  padding: 17px 0;
+  border: none;
+  border-radius: 40px;
+  background: linear-gradient(180deg, rgba(255,234,0,0.98), rgba(255,234,0,0.86));
+  color: #111;
+  font-size: 1.24rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.16s, box-shadow 0.14s, transform 0.08s;
+  box-shadow: 0 18px 40px rgba(255,234,0,0.08), 0 6px 18px rgba(0,0,0,0.45);
+  letter-spacing: 0.01em;
+  backdrop-filter: blur(2px);
+}
+.login-btn:hover {
+  background: linear-gradient(180deg, rgba(255,234,0,0.95), rgba(255,234,0,0.82));
+  transform: translateY(-1px);
+}
+
+/* Pills & badges */
+.login-pill { background: rgba(255,234,0,0.12); color: rgba(255,234,0,0.95); padding: 6px 12px; border-radius: 12px; font-weight: 700; }
+.login-badge-blue { background: #5570A6; color: #fff; padding: 6px 12px; border-radius: 12px; font-weight: 600; }
+.login-accent-green { color: #8BE13E; }
+
+/* links and small accents */
+.login-bottom-link { margin-top: 2.0rem; text-align: center; color: #AAB0B6; }
+.login-link { color: rgba(255,234,0,0.96); font-size: 1.04rem; text-decoration: underline; font-weight: 600; letter-spacing: 0.01em; }
+.login-link:hover { color: rgba(230,216,0,0.98); }
+
+/* Autofill */
+.login-input:-webkit-autofill,
+.login-input:-webkit-autofill:focus,
+.login-input:-webkit-autofill:hover,
+.login-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #2F2F31 inset !important;
+  box-shadow: 0 0 0 1000px #2F2F31 inset !important;
+  -webkit-text-fill-color: #E6E6E6 !important;
+  color: #E6E6E6 !important;
+  caret-color: #E6E6E6 !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* customer service floating button */
+.customer-service-btn-top {
+  position: fixed;
+  top: 26px;
+  right: 34px;
+  background: linear-gradient(180deg, rgba(85,112,166,0.95), rgba(85,112,166,0.92));
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  border: none;
+  transition: transform 0.12s, filter 0.2s;
+}
+.customer-service-btn-top:hover { transform: translateY(-2px); filter: brightness(1.05); }
+
+@media (max-width: 600px) {
+  .login-logo-absolute { top: 32px; }
+  .login-content-centered { max-width: 99vw; padding: 0 1vw; margin-top: 85px; }
+  .login-logo-img { height: 48px; }
+  .login-title { font-size: 1.1rem; margin-bottom: 24px; }
+  .login-form { gap: 9px; }
+  .login-label { font-size: 0.93rem; padding-left: 10px; }
+  .login-btn { font-size: 1.08rem; padding: 11px 0; }
+  .login-placeholder { font-size: 0.97rem; padding-right: 8px; }
+  .login-input, .login-input-placeholder-wrap { padding-left: 10px !important; padding-right: 10px !important; }
+  .customer-service-btn-top { right: 13px; top: 14px; width: 38px; height: 38px; }
+}
