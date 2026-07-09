@@ -36,7 +36,7 @@ import profileIcon from "../assets/images/tabBar/My3.png";
 // Partner logos (ensure this import exists)
 import partnerRow from "../assets/images/home/partner_row.png";
 
-const API_URL = "https://digitalblitz-backend.onrender.com";
+const API_URL = "https://lumostra-admin.onrender.com";
 
 /*
   Palette used across this page:
