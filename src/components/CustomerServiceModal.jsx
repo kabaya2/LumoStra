@@ -5,7 +5,7 @@ import telegramLogo from "../assets/images/contact/telegram.png";
 import signalLogo from "../assets/images/contact/signal.png";
 import whatsappLogo from "../assets/images/contact/whatsapp.png";
 
-const API_BASE = "https://digitalblitz-backend.onrender.com";
+const API_BASE = "https://lumostra-admin.onrender.com";
 // Platform color variables with sensible fallbacks
 const ACCENT = "var(--db-accent, #FFEA00)"; // lemon yellow
 const CARD_BG = "var(--db-card, #111)";     // dark card
