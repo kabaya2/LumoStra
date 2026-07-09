@@ -94,7 +94,7 @@ function SpinnerOverlay({ duration = 500, onDone }) {
   );
 }
 
-const API_URL = "https://digitalblitz-backend.onrender.com";
+const API_URL = "https://lumostra-admin.onrender.com";
 
 export default function Login({ refreshRecords }) {
   const [input, setInput] = useState("");
