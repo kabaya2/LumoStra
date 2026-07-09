@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
   // Build a small process.env object with only the keys your app uses.
   // Add other keys here as needed. Values come from .env or your shell.
   const injectedProcessEnv = {
-    REACT_APP_API_URL: env.REACT_APP_API_URL || "hhttps://lumostra-admin.onrender.com",
+    REACT_APP_API_URL: env.REACT_APP_API_URL || "https://lumostra-admin.onrender.com",
     STACKL_HEALTH_TOKEN: env.STACKL_HEALTH_TOKEN || ""
   };
 
@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       proxy: {
-        "/api": "https://digitalblitz-backend.onrender.com",
+        "/api": "https://lumostra-admin.onrender.com",
       },
     },
     build: {
