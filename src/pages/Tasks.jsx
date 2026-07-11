@@ -1130,7 +1130,7 @@ export default function Tasks() {
           <span data-i18n="Notice">Notice</span>
         </div>
         <p style={{ fontSize: 12, color: "var(--db-muted)", margin: 0, lineHeight: 1.5 }} data-i18n="Online Support Hours">
-          Online Support Hours 9:00 - 21:00<br/>Please contact online support for your assistance!
+          Online Support Hours 10:00 - 23:00<br/>Please contact online support for your assistance!
         </p>
       </div>
 
