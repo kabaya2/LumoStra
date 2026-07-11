@@ -1,9 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const BACKEND_API = "https://lumostra-admin.onrender.com/api";
+const BACKEND_API = "https://stacksapp-backend.onrender.com/api";
 
 export default function BindWallet() {
+  // Platform color tokens (adjust here to tweak theme)
+  const COLORS = {
+    pageBg: "#0b0b0b",        // page background (very dark)
+    panelBg: "#101214",       // main panel/card background
+    inputBg: "#0f1720",       // input background
+    inputBorder: "#26282b",   // input border
+    text: "#f4efe9",          // primary text
+    muted: "#9aa0a6",         // secondary / placeholder text
+    accent: "#FFD400",        // primary accent (yellow)
+    accentText: "#111111",    // text on accent buttons
+    actionBg: "#111111",      // dark action buttons (if needed)
+    success: "#16a34a",       // toast success
+    shadow: "rgba(0,0,0,0.5)",
+  };
+
   const [fullName, setFullName] = useState("");
   const [exchange, setExchange] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
@@ -41,15 +56,7 @@ export default function BindWallet() {
     setLoading(true);
 
     try {
-      // Prefer the global auth token key used elsewhere, fallback to token inside currentUser
-      const token = localStorage.getItem("authToken") || user?.token;
-      if (!token) {
-        setLoading(false);
-        alert("Authentication token missing. Please log in again.");
-        navigate("/login");
-        return;
-      }
-
+      const token = user?.token;
       const res = await fetch(`${BACKEND_API}/bind-wallet`, {
         method: "POST",
         headers: {
@@ -63,15 +70,6 @@ export default function BindWallet() {
           network,
         }),
       });
-
-      // Treat explicit auth failures
-      if (res.status === 401 || res.status === 403) {
-        setLoading(false);
-        alert("Not authorized. Please log in again.");
-        navigate("/login");
-        return;
-      }
-
       const data = await res.json();
       setLoading(false);
       if (data.success) {
@@ -116,22 +114,37 @@ export default function BindWallet() {
     }, 220);
   };
 
+  // small helper styles to reduce repetition
+  const baseInputStyle = {
+    width: "100%",
+    padding: "14px 16px",
+    borderRadius: 8,
+    border: `1px solid ${COLORS.inputBorder}`,
+    background: COLORS.inputBg,
+    fontSize: 15,
+    fontWeight: 600,
+    boxSizing: "border-box",
+    color: COLORS.text,
+    outline: "none",
+    textAlign: "left",
+  };
+
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(180deg, var(--db-bg, #0A0A0A), #000)",
+        background: COLORS.pageBg,
         position: "relative",
         fontFamily: "Inter, Arial, sans-serif",
-        color: "var(--db-text, #E6E6E6)",
+        color: COLORS.text,
         WebkitFontSmoothing: "antialiased",
       }}
     >
       {/* Header */}
       <div
         style={{
-          background: "var(--db-card, #111)",
-          color: "var(--db-text, #fff)",
+          background: "#000",
+          color: "#fff",
           padding: "14px 12px",
           display: "flex",
           alignItems: "center",
@@ -140,6 +153,7 @@ export default function BindWallet() {
           top: 0,
           zIndex: 40,
           boxSizing: "border-box",
+          borderBottom: `1px solid ${COLORS.inputBorder}`,
         }}
       >
         <button
@@ -163,7 +177,7 @@ export default function BindWallet() {
           <svg width={20} height={20} viewBox="0 0 24 24" fill="none" aria-hidden>
             <polyline
               points="15 6 9 12 15 18"
-              stroke="var(--db-text, #fff)"
+              stroke="#fff"
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -176,141 +190,118 @@ export default function BindWallet() {
 
       {/* Content */}
       <div style={{ padding: 22, maxWidth: 820, margin: "0 auto", boxSizing: "border-box" }}>
-        {/* Name */}
-        <div style={{ marginBottom: 20 }}>
-          <label style={{ display: "block", fontWeight: 800, fontSize: 18, marginBottom: 10, color: "var(--db-text, #111)" }}>
-            Name
-          </label>
-          <input
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder="Full name"
-            style={{
-              width: "100%",
-              padding: "14px 16px",
-              borderRadius: 8,
-              border: "1px solid rgba(0,0,0,0.06)",
-              boxShadow: "0 6px 18px rgba(0,0,0,0.04)",
-              background: "var(--db-card, #fff)",
-              fontSize: 15,
-              fontWeight: 600,
-              boxSizing: "border-box",
-              color: "var(--db-text, #222)",
-              outline: "none",
-              textAlign: "left",
-            }}
-          />
-        </div>
-
-        {/* Crypto Network */}
-        <div style={{ marginBottom: 20 }}>
-          <label style={{ display: "block", fontWeight: 800, fontSize: 18, marginBottom: 10, color: "var(--db-text, #111)" }}>
-            Crypto Network
-          </label>
-          <div
-            role="button"
-            onClick={() => setShowNetworkSheet(true)}
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") setShowNetworkSheet(true);
-            }}
-            style={{
-              width: "100%",
-              padding: "14px 16px",
-              borderRadius: 8,
-              border: "1px solid rgba(0,0,0,0.06)",
-              boxShadow: "0 6px 18px rgba(0,0,0,0.04)",
-              background: "var(--db-card, #fff)",
-              fontSize: 15,
-              fontWeight: 600,
-              boxSizing: "border-box",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              cursor: "pointer",
-              color: network ? "var(--db-text, #111)" : "var(--db-muted, #7d7d7d)",
-            }}
-          >
-            <span style={{ color: network ? "var(--db-text, #111)" : "var(--db-muted, #7d7d7d)" }}>{network || "BTC"}</span>
-            <svg width={18} height={18} viewBox="0 0 24 24" fill="none" aria-hidden>
-              <polyline points="6 9 12 15 18 9" stroke="var(--db-muted, #999)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+        <div
+          style={{
+            background: COLORS.panelBg,
+            padding: 18,
+            borderRadius: 12,
+            boxShadow: `0 8px 28px ${COLORS.shadow}`,
+            border: `1px solid ${COLORS.inputBorder}`,
+          }}
+        >
+          {/* Name */}
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ display: "block", fontWeight: 800, fontSize: 18, marginBottom: 10, color: COLORS.text }}>
+              Name
+            </label>
+            <input
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Full name"
+              style={{
+                ...baseInputStyle,
+              }}
+              placeholderTextColor={COLORS.muted}
+            />
           </div>
-        </div>
 
-        {/* Crypto Wallet */}
-        <div style={{ marginBottom: 20 }}>
-          <label style={{ display: "block", fontWeight: 800, fontSize: 18, marginBottom: 10, color: "var(--db-text, #111)" }}>
-            Crypto Wallet
-          </label>
-          <input
-            value={exchange}
-            onChange={(e) => setExchange(e.target.value)}
-            placeholder="Wallet name"
-            style={{
-              width: "100%",
-              padding: "14px 16px",
-              borderRadius: 8,
-              border: "1px solid rgba(0,0,0,0.06)",
-              boxShadow: "0 6px 18px rgba(0,0,0,0.04)",
-              background: "var(--db-card, #fff)",
-              fontSize: 15,
-              fontWeight: 600,
-              boxSizing: "border-box",
-              color: "var(--db-text, #222)",
-              outline: "none",
-              textAlign: "left",
-            }}
-          />
-        </div>
+          {/* Crypto Network */}
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ display: "block", fontWeight: 800, fontSize: 18, marginBottom: 10, color: COLORS.text }}>
+              Crypto Network
+            </label>
+            <div
+              role="button"
+              onClick={() => setShowNetworkSheet(true)}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") setShowNetworkSheet(true);
+              }}
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                borderRadius: 8,
+                border: `1px solid ${COLORS.inputBorder}`,
+                background: COLORS.inputBg,
+                fontSize: 15,
+                fontWeight: 600,
+                boxSizing: "border-box",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                cursor: "pointer",
+                color: network ? COLORS.text : COLORS.muted,
+              }}
+            >
+              <span style={{ color: network ? COLORS.text : COLORS.muted }}>{network || "BTC"}</span>
+              <svg width={18} height={18} viewBox="0 0 24 24" fill="none" aria-hidden>
+                <polyline points="6 9 12 15 18 9" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </div>
 
-        {/* Wallet Address */}
-        <div style={{ marginBottom: 20 }}>
-          <label style={{ display: "block", fontWeight: 800, fontSize: 18, marginBottom: 10, color: "var(--db-text, #111)" }}>
-            BTC/ERC-20/TRC-20 Wallet Address
-          </label>
-          <input
-            value={walletAddress}
-            onChange={(e) => setWalletAddress(e.target.value)}
-            placeholder="Wallet address"
-            style={{
-              width: "100%",
-              padding: "14px 16px",
-              borderRadius: 8,
-              border: "1px solid rgba(0,0,0,0.06)",
-              boxShadow: "0 6px 18px rgba(0,0,0,0.04)",
-              background: "var(--db-card, #fff)",
-              fontSize: 15,
-              fontWeight: 600,
-              boxSizing: "border-box",
-              color: "var(--db-text, #222)",
-              outline: "none",
-              textAlign: "left",
-            }}
-          />
-        </div>
+          {/* Crypto Wallet */}
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ display: "block", fontWeight: 800, fontSize: 18, marginBottom: 10, color: COLORS.text }}>
+              Wallet / Exchange
+            </label>
+            <input
+              value={exchange}
+              onChange={(e) => setExchange(e.target.value)}
+              placeholder="Wallet name"
+              style={{
+                ...baseInputStyle,
+              }}
+            />
+          </div>
 
-        {/* Update button */}
-        <div style={{ marginTop: 16 }}>
-          <button
-            onClick={handleUpdate}
-            disabled={loading}
-            style={{
-              width: "100%",
-              padding: "14px 18px",
-              borderRadius: 10,
-              background: "var(--db-accent, #FFEA00)",
-              color: "#111",
-              fontSize: 18,
-              fontWeight: 700,
-              border: "none",
-              cursor: loading ? "default" : "pointer",
-              boxShadow: "0 12px 28px rgba(0,0,0,0.14)",
-              letterSpacing: 0.2,
-            }}
-          >
-            {loading ? "Updating..." : "Update"}
-          </button>
+          {/* Wallet Address */}
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ display: "block", fontWeight: 800, fontSize: 18, marginBottom: 10, color: COLORS.text }}>
+              BTC/ERC-20/TRC-20 Wallet Address
+            </label>
+            <input
+              value={walletAddress}
+              onChange={(e) => setWalletAddress(e.target.value)}
+              placeholder="Wallet address"
+              style={{
+                ...baseInputStyle,
+              }}
+            />
+          </div>
+
+          {/* Update button */}
+          <div style={{ marginTop: 16 }}>
+            <button
+              onClick={handleUpdate}
+              disabled={loading}
+              style={{
+                width: "100%",
+                padding: "14px 18px",
+                borderRadius: 10,
+                background: loading ? "#777" : COLORS.accent,
+                color: COLORS.accentText,
+                fontSize: 18,
+                fontWeight: 700,
+                border: "none",
+                cursor: loading ? "default" : "pointer",
+                boxShadow: `0 12px 28px ${COLORS.shadow}`,
+                letterSpacing: 0.2,
+              }}
+            >
+              {loading ? "Updating..." : "Update"}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -322,7 +313,7 @@ export default function BindWallet() {
             bottom: 18,
             left: "50%",
             transform: "translateX(-50%)",
-            background: "var(--db-green, #16a34a)",
+            background: COLORS.success,
             color: "#fff",
             padding: "10px 16px",
             borderRadius: 8,
@@ -363,20 +354,19 @@ export default function BindWallet() {
               // We use transform for the slide animation:
               transform: sheetClosing ? "translateY(110%)" : showNetworkSheet ? "translateY(0%)" : "translateY(110%)",
               transition: "transform 220ms cubic-bezier(.2,.9,.2,1)",
-              background: "var(--db-card, #fff)",
+              background: COLORS.panelBg,
               borderTopLeftRadius: 14,
               borderTopRightRadius: 14,
               paddingTop: 8,
               paddingBottom: 18,
-              boxShadow: "0 -12px 36px rgba(0,0,0,0.22)",
+              boxShadow: `0 -12px 36px ${COLORS.shadow}`,
               maxWidth: 820,
               margin: "0 auto",
               overflow: "hidden",
             }}
           >
             <div style={{ padding: "8px 8px" }}>
-              {/* We make the sheet smaller and remove separators as requested */}
-              {networkOptions.map((opt, idx) => (
+              {networkOptions.map((opt) => (
                 <button
                   key={opt}
                   onClick={() => {
@@ -396,9 +386,7 @@ export default function BindWallet() {
                     padding: "14px 12px",
                     fontSize: 18,
                     fontWeight: 700,
-                    color: "var(--db-text, #111)",
-                    // no separator lines between options
-                    // keep comfortable spacing but smaller than previous
+                    color: COLORS.text,
                     cursor: "pointer",
                   }}
                 >
