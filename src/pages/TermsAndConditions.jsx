@@ -111,22 +111,26 @@ LumoStra is a partner of the United Nations World Food Programme (WFP). All user
 1.2 A minimum deposit of 100 USD is required to reset and begin the new daily product submission process.
 1.3 Users must complete the current dataset before requesting a reset for the next set of submissions.
 
+
 2. Withdrawal
 2.1 Withdrawal amount is based on the VIP level of the account, if withdrawals exceeding the amount require an upgrade to the appropriate membership level, as each level is subject to different withdrawal limits.
 2.2 Users are required to complete two sets of product submissions per day in order to submit a withdrawal request. Additionally, users must request the withdrawal of their full account balance.
 2.3 Users who abandon or quit during the product submission process are ineligible to apply for a withdrawal or refund.
 2.4 If a withdrawal request has not been formally submitted by the user, the platform cannot process any withdrawal on the user’s behalf.
-2.5 All members apply for withdrawal of more than 20,000 USD for the first time need to contact online customer service to process it to ensure the safety of all members' transfer funds
+2.5 All members apply for withdrawal of more than 20,000 USD for the first time need to contact online customer service to process it to ensure the safety of all members' transfer funds.
+
 
 3. Funds
 3.1 All user funds will be securely stored in their account and may be withdrawn in full once all product submissions are completed.
 3.2 To avoid any loss of funds, all data processing will be handled by the system, not manually.
 3.3 In case of accidental loss of funds, the platform will assume full responsibility.
 
+
 4. Account Security
 4.1 Users must not share their login passwords or security PIN with others. If this results in a loss, the platform will not be responsible.
 4.2 It is not recommended to set easily identifiable information, such as birthdates, ID card numbers, or phone numbers, as security codes or login passwords.
 4.3 If users forget their login or withdrawal passwords, they should contact customer service to reset them.
+
 
 5. Single Mission
 5.1 VIP 1 users can complete 2 sets of product submissions per day with a 0.5% commission for each normal product data.
@@ -136,6 +140,8 @@ LumoStra is a partner of the United Nations World Food Programme (WFP). All user
 5.5 Upon successful submission of product data, the commission will be automatically credited to the user’s account balance.
 5.6 The system will randomly assign product data to the user’s account based on their account balance.
 5.7 Once the data is assigned to the user’s account, it cannot be canceled, skipped, or exchanged.
+
+
 6. Combo Mission
 6.1 Merged product consists of 2 to 3 product data sets. Users may not necessarily receive 3 product data sets; the system will randomly assign product data within the merged product, with a higher likelihood of receiving 1 product data set.
 6.2 Users will earn ten times the commission for each product in the merged product compared to normal product data.
@@ -144,15 +150,18 @@ LumoStra is a partner of the United Nations World Food Programme (WFP). All user
 6.5 Once merged product is assigned to the user’s account, it cannot be canceled, skipped, or exchanged.
 6.6 A user can receive a maximum of 3 merged product sets per set of product submission.
 
+
 7. Advance Payments
 7.1 The amount for advance payment is determined by the user. The platform does not set specific amounts for the user, but recommends users make advance payments based on their financial capacity or after becoming familiar with the platform.
 7.2 If a user needs to make an advance payment upon receiving merged product, it is advised that the user pays according to the negative balance indicated in their account.
 7.3 Before making an advance payment, users must contact customer service to request advance payment details and confirm the merchant’s wallet address.
 7.4 The platform will not assume responsibility for any loss resulting from payments made to incorrect wallet addresses.
 
+
 8. Merchant Cooperation
 8.1 Data availability on the platform fluctuates. If product is not processed in a timely manner, merchants may be unable to offload it, affecting their progress. Users are encouraged to complete their submissions and apply for withdrawals promptly to avoid hindering merchant progress. Users must complete all submissions within 24 hours to avoid complaints from merchants and order freezes.
 8.2 Merchants will provide users with wallet addresses to facilitate advance payments.
+
 
 9. Invitation
 9.1 Users may invite other users to the platform using the invitation code linked to their account.
@@ -160,16 +169,19 @@ LumoStra is a partner of the United Nations World Food Programme (WFP). All user
 9.3 To be eligible to use an invitation code to invite referrals, a user must first complete 15 days of work after registration.
 9.4 Referrers will receive 20% of the referee's daily earnings as a commission.
 
+
 10. Credit Score
 10.1 Users must complete all sets of product data submissions to maintain a 100% credit score.
 10.2 Failure to complete the submissions will result in a decrease in the user's credit score.
 10.3 The credit score is determined by the number of incomplete orders and the timeliness of their completion.
 10.4 A decrease in credit score may affect a user's ability to request withdrawals.
 
+
 11. Operating Hours
 11.1 The platform operates from 10:00 -23:00 (EST).
 11.2 Customer service is available from 10:00 -23:00 (EST).
 11.3 Platform withdrawal hours are from 10:00 -23:00 (EST).
+
 The final right of interpretation belongs to Lumostra`;
 
   return (
