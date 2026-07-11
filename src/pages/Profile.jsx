@@ -770,7 +770,7 @@ export default function Profile() {
                   maskPosition: "center",
                 }}
               />
-              <div style={{ fontSize: 15, fontWeight: 700, color: "var(--db-text)" }}>Personal Information</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "var(--db-text)" }}>Edit Profile</div>
             </div>
             <div style={{ color: "var(--db-muted)" }}>›</div>
           </div>
@@ -795,7 +795,7 @@ export default function Profile() {
                   maskPosition: "center",
                 }}
               />
-              <div style={{ fontSize: 15, fontWeight: 700, color: "var(--db-text)" }}>Payment Methods</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "var(--db-text)" }}>Bind Wallet Address</div>
             </div>
             <div style={{ color: "var(--db-muted)" }}>›</div>
           </div>
