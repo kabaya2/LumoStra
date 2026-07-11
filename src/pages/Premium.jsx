@@ -41,7 +41,7 @@ export default function Premium() {
         "Profit of 0.5% per product improvement",
         "Profit of 3.0% per combination product package",
         "Maximum 40 products per set of data improvement",
-        "Maximum of 3 sets of product improvement tasks per day",
+        "Maximum of 2 sets of product improvement tasks per day",
       ],
     },
     {
@@ -54,7 +54,7 @@ export default function Premium() {
         "Profit of 1.0% per product improvement",
         "Profit of 6.0% per combination product package",
         "Maximum 45 products per set of data improvement",
-        "Maximum of 3 sets of product improvement tasks per day",
+        "Maximum of 2 sets of product improvement tasks per day",
       ],
     },
     {
@@ -67,7 +67,7 @@ export default function Premium() {
         "Profit of 1.5% per product improvement",
         "Profit of 9.0% per combination product package",
         "Maximum 50 products per set of data improvement",
-        "Maximum of 4 sets of product improvement tasks per day",
+        "Maximum of 2 sets of product improvement tasks per day",
       ],
     },
     {
@@ -80,7 +80,7 @@ export default function Premium() {
         "Profit of 2% per product improvement",
         "Profit of 12% per combination product package",
         "Maximum 55 products per set of data improvement",
-        "Maximum of 5 sets of product improvement tasks per day",
+        "Maximum of 2 sets of product improvement tasks per day",
       ],
     },
   ];
