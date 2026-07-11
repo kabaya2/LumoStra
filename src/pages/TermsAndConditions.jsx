@@ -101,109 +101,32 @@ export default function TermsAndConditions() {
   }, []);
 
   // The full Terms & Conditions text (modified: "Digital Blitz" -> "LumoStra", VIP earnings updated, USDC -> USD)
-  const termsText = `Welcome to LumoStra and its services!
+  const termsText = `Terms & Conditions
+These Terms and Conditions are governed by the following terminology and principles of interpretation. All users are required to adhere to the terms outlined by the platform. Any violations will result in corrective actions and penalties imposed by the platform. The User Agreement, which is part of these Terms and Conditions, is subject to the platform's final interpretation.
 
 LumoStra is a partner of the United Nations World Food Programme (WFP). All users of the platform will be donors to this charitable organization. We thank all users on LumoStra for their contributions to the charity, hoping that all humanity can enjoy healthy food.
 
-I. Starting Product Maintenance
+1. Start to Submit Product Data
+1.1 A minimum account balance of 50 USD is required to initiate the first set of 40 product submissions.
+1.2 A minimum deposit of 100 USD is required to reset and begin the new daily product submission process.
+1.3 Users must complete the current dataset before requesting a reset for the next set of submissions.
 
-1.1) Users need a minimum account balance of 100 USD before beginning a new set of maintenance tasks.
+2. Withdrawal
+2.1 Withdrawal amount is based on the VIP level of the account, if withdrawals exceeding the amount require an upgrade to the appropriate membership level, as each level is subject to different withdrawal limits.
+2.2 Users are required to complete two sets of product submissions per day in order to submit a withdrawal request. Additionally, users must request the withdrawal of their full account balance.
+2.3 Users who abandon or quit during the product submission process are ineligible to apply for a withdrawal or refund.
+2.4 If a withdrawal request has not been formally submitted by the user, the platform cannot process any withdrawal on the user’s behalf.
+2.5 All members apply for withdrawal of more than 20,000 USD for the first time need to contact online customer service to process it to ensure the safety of all members' transfer funds
 
-1.2) At least 100 USD is required to reset the maintenance cycle for a new set.
+3. Funds
+3.1 All user funds will be securely stored in their account and may be withdrawn in full once all product submissions are completed.
+3.2 To avoid any loss of funds, all data processing will be handled by the system, not manually.
+3.3 In case of accidental loss of funds, the platform will assume full responsibility.
 
-1.3) After completing all tasks for the day, users must apply for a full withdrawal and receive the withdrawal amount before applying to reset the account.
-
-II. Withdrawal
-
-2.1) For withdrawal amounts of 10,000 USD or above, please contact our online customer service.
-1: The maximum withdrawal for VIP1 users is 5,000 USD.
-2: The maximum for VIP2 is 10,000 USD.
-3: For VIP3, it's 100,000 USD.
-4: VIP4 users can withdraw up to 500,000 USD.
-
-2.2) Once the account is reset, users must complete a set of all product maintenance before they can apply for withdrawal.
-
-2.3) Opting out or exiting during the maintenance of combo products will prevent withdrawal or refund applications.
-
-2.4) Withdrawal requests will not be processed if not received from the user.
-
-2.5) Withdrawal applications are impossible with a credit score below 100%. You must restore your account's credit score before applying.
-
-III. Funds
-
-3.1) Funds are stored securely in users' accounts and can be fully withdrawn after completing all product maintenance.
-
-3.2) To prevent fund loss, all data processing is handled by the system without manual intervention.
-
-3.3) The platform takes full responsibility for any accidental loss of funds.
-
-IV. Account Security
-
-4.1) Do not share your login password and security code with others. The platform isn't responsible for any loss incurred from shared credentials.
-
-4.2) Avoid using personal information such as your birthday or ID number as your security code or login password.
-
-4.3) If you forget your login details, please contact our online customer service to reset them.
-
-V. Standard Applications and VIP Earnings
-
-5.1) Platform earnings are categorized into normal earnings and multiple earnings (more than 6 times). In a set of product data, users typically encounter 1-2 combo products and can receive up to 3 combo products.
-
-5.2) VIP earnings follow the platform's Premium rules:
-   - VIP1: 0.5% commission for each standard maintenance product; 3.0% commission for each combo product.
-   - VIP2: 1.0% commission for each standard maintenance product; 6.0% commission for each combo product.
-   - VIP3: 1.5% commission for each standard maintenance product; 9.0% commission for each combo product.
-   - VIP4: 2.0% commission for each standard maintenance product; 12.0% commission for each combo product.
-
-5.3) After maintenance completion, funds and earnings are returned to the user's account.
-
-5.4) The system allocates product value to users' accounts randomly, based on the real-time balance.
-
-VI. Combo Products
-
-6.1) Combo products consist of 1-3 products, and users are not guaranteed to receive 3 products. The system randomly allocates standard products based on the user's account funds, with a higher likelihood of receiving 1-2 products in a combo.
-
-6.2) Users receive more than 6 times the commission of a standard product for each product in the combo products.
-
-6.3) All funds stop rolling until you complete the orders for each product in the combo and return them to your account.
-
-6.4) The system randomly allocates combo products to users' accounts based on the total account balance.
-
-6.5) Once a combo product is allocated to a user, it cannot be canceled or skipped. Users must clear the account negative before they can submit the order for the combo product and apply for withdrawal after completing all tasks.
-
-VII. Deposit
-
-7.1) The deposit amount is chosen by the user; the platform cannot make this decision for the user. It is advised to select the amount according to one's financial capacity.
-
-7.2) Users advised to prepay a deposit upon receiving combo products should do so based on the insufficient amount displayed in their account.
-
-7.3) Before prepaying, you must consult with online customer service for details and confirm the deposit.
-
-7.4) If a user deposits into the incorrect address, the platform is not responsible for any losses incurred.
-
-7.5) During the platform's promotional period, to further reward our valued users and allow them to earn more commissions, the system will automatically upgrade any account to VIP4 status if the user's funds exceed 20,000 USD.
-
-VIII. Merchant Collaboration
-
-8.1) The platform has various products going online and offline. If a product is not maintained in a timely manner, it can negatively affect the product's reputation. Users are encouraged to complete all product maintenance promptly.
-
-8.2) Merchants provide deposit details for user deposits.
-
-8.3) Delays in completing product maintenance can result in losses for merchants and disrupt the process.
-
-IX. Agent/User Responsibilities
-
-9.1) Agents/users must complete the maintenance of the entire set of products within 24 hours. Otherwise, it may result in some functionalities of the account being restricted by the system, and you will need to contact online customer service to lift the account restrictions.
-
-9.2) Combo products are distributed randomly by the system. Users must fully understand the platform rules and choose their deposit amount based on their financial situation. Once allocated combo products, users can earn more than 6 times the commission, but they need to complete the clearance/deposit for the combo products within the specified 24 hours. Failure to do so can affect the reputation of the combo products, impact the user's account credit score, and the user will bear all responsibilities.
-
-X. Invitation
-
-10.1) Agents can invite other users through the invitation code on their account.
-
-10.2) If the account has not completed all product maintenance, it cannot invite other users.
-
-10.3) The referrer will receive an additional 20% of the total product commission from the referred person for the day, excluding commissions.`;
+4. Account Security
+4.1 Users must not share their login passwords or security PIN with others. If this results in a loss, the platform will not be responsible.
+4.2 It is not recommended to set easily identifiable information, such as birthdates, ID card numbers, or phone numbers, as security codes or login passwords.
+4.3 If users forget their login or withdrawal passwords, they should contact customer service to reset them.`;
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(180deg, var(--db-bg, #0A0A0A), #000)", fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial", color: "var(--db-text, #E6E6E6)" }}>
