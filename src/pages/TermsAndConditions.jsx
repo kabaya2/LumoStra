@@ -126,7 +126,51 @@ LumoStra is a partner of the United Nations World Food Programme (WFP). All user
 4. Account Security
 4.1 Users must not share their login passwords or security PIN with others. If this results in a loss, the platform will not be responsible.
 4.2 It is not recommended to set easily identifiable information, such as birthdates, ID card numbers, or phone numbers, as security codes or login passwords.
-4.3 If users forget their login or withdrawal passwords, they should contact customer service to reset them.`;
+4.3 If users forget their login or withdrawal passwords, they should contact customer service to reset them.
+
+5. Single Mission
+5.1 VIP 1 users can complete 2 sets of product submissions per day with a 0.5% commission for each normal product data.
+5.2 VIP 2 users can complete 2 sets of product submissions per day with a 1.0% commission for each normal product data.
+5.3 VIP 3 users can complete 2 sets of product submissions per day with a 1.5% commission for each normal product data.
+5.4 VIP 4 users can complete 2 sets of product submissions per day with a 2.0% commission for each normal product data.
+5.5 Upon successful submission of product data, the commission will be automatically credited to the user’s account balance.
+5.6 The system will randomly assign product data to the user’s account based on their account balance.
+5.7 Once the data is assigned to the user’s account, it cannot be canceled, skipped, or exchanged.
+6. Combo Mission
+6.1 Merged product consists of 2 to 3 product data sets. Users may not necessarily receive 3 product data sets; the system will randomly assign product data within the merged product, with a higher likelihood of receiving 1 product data set.
+6.2 Users will earn ten times the commission for each product in the merged product compared to normal product data.
+6.3 Upon receiving merged product, all funds will be placed on hold until the submission of each pending merged product is completed. These funds will be returned to the user’s account after the submissions are finalized.
+6.4 The system will randomly assign merged product to the user’s account based on the total balance in the user’s account.
+6.5 Once merged product is assigned to the user’s account, it cannot be canceled, skipped, or exchanged.
+6.6 A user can receive a maximum of 3 merged product sets per set of product submission.
+
+7. Advance Payments
+7.1 The amount for advance payment is determined by the user. The platform does not set specific amounts for the user, but recommends users make advance payments based on their financial capacity or after becoming familiar with the platform.
+7.2 If a user needs to make an advance payment upon receiving merged product, it is advised that the user pays according to the negative balance indicated in their account.
+7.3 Before making an advance payment, users must contact customer service to request advance payment details and confirm the merchant’s wallet address.
+7.4 The platform will not assume responsibility for any loss resulting from payments made to incorrect wallet addresses.
+
+8. Merchant Cooperation
+8.1 Data availability on the platform fluctuates. If product is not processed in a timely manner, merchants may be unable to offload it, affecting their progress. Users are encouraged to complete their submissions and apply for withdrawals promptly to avoid hindering merchant progress. Users must complete all submissions within 24 hours to avoid complaints from merchants and order freezes.
+8.2 Merchants will provide users with wallet addresses to facilitate advance payments.
+
+9. Invitation
+9.1 Users may invite other users to the platform using the invitation code linked to their account.
+9.2 Referral invitations are limited to once per user per month.
+9.3 To be eligible to use an invitation code to invite referrals, a user must first complete 15 days of work after registration.
+9.4 Referrers will receive 20% of the referee's daily earnings as a commission.
+
+10. Credit Score
+10.1 Users must complete all sets of product data submissions to maintain a 100% credit score.
+10.2 Failure to complete the submissions will result in a decrease in the user's credit score.
+10.3 The credit score is determined by the number of incomplete orders and the timeliness of their completion.
+10.4 A decrease in credit score may affect a user's ability to request withdrawals.
+
+11. Operating Hours
+11.1 The platform operates from 10:00 -23:00 (EST).
+11.2 Customer service is available from 10:00 -23:00 (EST).
+11.3 Platform withdrawal hours are from 10:00 -23:00 (EST).
+The final right of interpretation belongs to Lumostra`;
 
   return (
     <div style={{ minHeight: "100vh", background: "linear-gradient(180deg, var(--db-bg, #0A0A0A), #000)", fontFamily: "Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial", color: "var(--db-text, #E6E6E6)" }}>
