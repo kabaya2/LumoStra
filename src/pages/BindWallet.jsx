@@ -4,59 +4,75 @@ import { useNavigate } from "react-router-dom";
 const BACKEND_API = "https://lumostra-admin.onrender.com/api";
 
 export default function BindWallet() {
-  // Platform color tokens (adjust here to tweak theme)
+  // Platform color tokens (adjust if needed)
   const COLORS = {
-    pageBg: "#0b0b0b",        // page background (very dark)
-    panelBg: "#101214",       // main panel/card background
-    inputBg: "#0f1720",       // input background
-    inputBorder: "#26282b",   // input border
-    text: "#f4efe9",          // primary text
-    muted: "#9aa0a6",         // secondary / placeholder text
-    accent: "#FFD400",        // primary accent (yellow)
-    accentText: "#111111",    // text on accent buttons
-    actionBg: "#111111",      // dark action buttons (if needed)
-    success: "#16a34a",       // toast success
+    pageBg: "linear-gradient(180deg, #0A0A0A, #000)",
+    cardBg: "#0f1113",
+    inputBg: "#0b0d0f",
+    inputBorder: "#1f2528",
+    text: "#E6E6E6",
+    muted: "#9aa0a6",
+    accent: "#FFD400",
+    accentText: "#111",
+    success: "#16a34a",
     shadow: "rgba(0,0,0,0.5)",
   };
 
   const [fullName, setFullName] = useState("");
-  const [exchange, setExchange] = useState("");
+  const [walletName, setWalletName] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
-  const [network, setNetwork] = useState(""); // BTC / TRC20 / ERC20 etc.
   const [user, setUser] = useState(null);
-  const [showToast, setShowToast] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  // bottom sheet network selector
-  const [showNetworkSheet, setShowNetworkSheet] = useState(false);
-  const [sheetClosing, setSheetClosing] = useState(false); // used to play closing animation
+  const [showToast, setShowToast] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("currentUser");
-    if (storedUser) {
-      const parsed = JSON.parse(storedUser);
-      setUser(parsed);
-      setFullName(parsed.fullName || "");
-      setExchange(parsed.exchange || "");
-      setWalletAddress(parsed.walletAddress || parsed.wallet || "");
-      setNetwork(parsed.network || parsed.cryptoNetwork || "BTC");
+    const stored = localStorage.getItem("currentUser");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        setUser(parsed);
+        setFullName(parsed.fullName || "");
+        setWalletName(parsed.exchange || parsed.walletName || "");
+        setWalletAddress(parsed.walletAddress || parsed.wallet || "");
+      } catch (e) {
+        // Malformed localStorage — force re-login
+        localStorage.removeItem("currentUser");
+        navigate("/login");
+      }
     } else {
-      alert("Please login first.");
+      // Not logged in
       navigate("/login");
     }
   }, [navigate]);
 
   const handleUpdate = async () => {
-    if (!walletAddress.trim()) {
-      alert("Please enter a wallet address.");
+    if (!fullName.trim()) {
+      alert("Please enter your full name.");
       return;
     }
+    if (!walletName.trim()) {
+      alert("Please enter wallet name.");
+      return;
+    }
+    if (!walletAddress.trim()) {
+      alert("Please enter wallet address.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const token = user?.token;
+      // Prefer global auth token key, fallback to token in currentUser
+      const token = localStorage.getItem("authToken") || user?.token;
+      if (!token) {
+        setLoading(false);
+        alert("Authentication token missing. Please log in again.");
+        navigate("/login");
+        return;
+      }
+
       const res = await fetch(`${BACKEND_API}/bind-wallet`, {
         method: "POST",
         headers: {
@@ -65,20 +81,27 @@ export default function BindWallet() {
         },
         body: JSON.stringify({
           fullName,
-          exchange,
+          exchange: walletName,
           walletAddress,
-          network,
         }),
       });
+
+      if (res.status === 401 || res.status === 403) {
+        setLoading(false);
+        alert("Not authorized. Please log in again.");
+        navigate("/login");
+        return;
+      }
+
       const data = await res.json();
       setLoading(false);
+
       if (data.success) {
         const updatedUser = {
           ...user,
           fullName,
-          exchange,
+          exchange: walletName,
           walletAddress,
-          network,
         };
         try {
           localStorage.setItem("currentUser", JSON.stringify(updatedUser));
@@ -92,29 +115,16 @@ export default function BindWallet() {
           navigate("/profile");
         }, 1400);
       } else {
-        alert(data.message || "Failed to update wallet address.");
+        alert(data.message || "Failed to update wallet details.");
       }
     } catch (err) {
       setLoading(false);
-      alert("Failed to update wallet address.");
+      alert("Network error — failed to update wallet details.");
     }
   };
 
   if (!user) return null;
 
-  const networkOptions = ["BTC", "TRC20", "ERC20"];
-
-  // close sheet with slide-down animation
-  const closeSheet = () => {
-    setSheetClosing(true);
-    // match the transition duration below (220ms)
-    setTimeout(() => {
-      setSheetClosing(false);
-      setShowNetworkSheet(false);
-    }, 220);
-  };
-
-  // small helper styles to reduce repetition
   const baseInputStyle = {
     width: "100%",
     padding: "14px 16px",
@@ -126,7 +136,6 @@ export default function BindWallet() {
     boxSizing: "border-box",
     color: COLORS.text,
     outline: "none",
-    textAlign: "left",
   };
 
   return (
@@ -144,7 +153,7 @@ export default function BindWallet() {
       <div
         style={{
           background: "#000",
-          color: "#fff",
+          color: COLORS.text,
           padding: "14px 12px",
           display: "flex",
           alignItems: "center",
@@ -173,11 +182,10 @@ export default function BindWallet() {
             cursor: "pointer",
           }}
         >
-          {/* white back arrow */}
           <svg width={20} height={20} viewBox="0 0 24 24" fill="none" aria-hidden>
             <polyline
               points="15 6 9 12 15 18"
-              stroke="#fff"
+              stroke={COLORS.text}
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -185,118 +193,74 @@ export default function BindWallet() {
           </svg>
         </button>
 
-        <div style={{ fontSize: 20, fontWeight: 800 }}>Payment Methods</div>
+        <div style={{ fontSize: 20, fontWeight: 800 }}>Bind Wallet</div>
       </div>
 
       {/* Content */}
-      <div style={{ padding: 22, maxWidth: 820, margin: "0 auto", boxSizing: "border-box" }}>
+      <div style={{ padding: 22, maxWidth: 720, margin: "0 auto", boxSizing: "border-box" }}>
         <div
           style={{
-            background: COLORS.panelBg,
-            padding: 18,
+            background: COLORS.cardBg,
+            padding: 20,
             borderRadius: 12,
-            boxShadow: `0 8px 28px ${COLORS.shadow}`,
             border: `1px solid ${COLORS.inputBorder}`,
+            boxShadow: `0 8px 28px ${COLORS.shadow}`,
           }}
         >
-          {/* Name */}
-          <div style={{ marginBottom: 20 }}>
-            <label style={{ display: "block", fontWeight: 800, fontSize: 18, marginBottom: 10, color: COLORS.text }}>
-              Name
+          {/* Full Name */}
+          <div style={{ marginBottom: 18 }}>
+            <label style={{ display: "block", fontWeight: 800, fontSize: 16, marginBottom: 8, color: COLORS.text }}>
+              Full Name
             </label>
             <input
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Full name"
-              style={{
-                ...baseInputStyle,
-              }}
-              placeholderTextColor={COLORS.muted}
+              placeholder="Full Name"
+              style={baseInputStyle}
             />
           </div>
 
-          {/* Crypto Network */}
-          <div style={{ marginBottom: 20 }}>
-            <label style={{ display: "block", fontWeight: 800, fontSize: 18, marginBottom: 10, color: COLORS.text }}>
-              Crypto Network
-            </label>
-            <div
-              role="button"
-              onClick={() => setShowNetworkSheet(true)}
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") setShowNetworkSheet(true);
-              }}
-              style={{
-                width: "100%",
-                padding: "14px 16px",
-                borderRadius: 8,
-                border: `1px solid ${COLORS.inputBorder}`,
-                background: COLORS.inputBg,
-                fontSize: 15,
-                fontWeight: 600,
-                boxSizing: "border-box",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                cursor: "pointer",
-                color: network ? COLORS.text : COLORS.muted,
-              }}
-            >
-              <span style={{ color: network ? COLORS.text : COLORS.muted }}>{network || "BTC"}</span>
-              <svg width={18} height={18} viewBox="0 0 24 24" fill="none" aria-hidden>
-                <polyline points="6 9 12 15 18 9" stroke="#999" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-          </div>
-
-          {/* Crypto Wallet */}
-          <div style={{ marginBottom: 20 }}>
-            <label style={{ display: "block", fontWeight: 800, fontSize: 18, marginBottom: 10, color: COLORS.text }}>
-              Wallet / Exchange
+          {/* Wallet Name */}
+          <div style={{ marginBottom: 18 }}>
+            <label style={{ display: "block", fontWeight: 800, fontSize: 16, marginBottom: 8, color: COLORS.text }}>
+              Wallet Name
             </label>
             <input
-              value={exchange}
-              onChange={(e) => setExchange(e.target.value)}
-              placeholder="Wallet name"
-              style={{
-                ...baseInputStyle,
-              }}
+              value={walletName}
+              onChange={(e) => setWalletName(e.target.value)}
+              placeholder="Wallet Name (e.g., Binance, Trust Wallet)"
+              style={baseInputStyle}
             />
           </div>
 
           {/* Wallet Address */}
-          <div style={{ marginBottom: 20 }}>
-            <label style={{ display: "block", fontWeight: 800, fontSize: 18, marginBottom: 10, color: COLORS.text }}>
-              BTC/ERC-20/TRC-20 Wallet Address
+          <div style={{ marginBottom: 6 }}>
+            <label style={{ display: "block", fontWeight: 800, fontSize: 16, marginBottom: 8, color: COLORS.text }}>
+              Wallet Address
             </label>
             <input
               value={walletAddress}
               onChange={(e) => setWalletAddress(e.target.value)}
-              placeholder="Wallet address"
-              style={{
-                ...baseInputStyle,
-              }}
+              placeholder="Wallet Address"
+              style={baseInputStyle}
             />
           </div>
 
-          {/* Update button */}
-          <div style={{ marginTop: 16 }}>
+          <div style={{ marginTop: 18 }}>
             <button
               onClick={handleUpdate}
               disabled={loading}
               style={{
                 width: "100%",
-                padding: "14px 18px",
+                padding: "12px 16px",
                 borderRadius: 10,
                 background: loading ? "#777" : COLORS.accent,
                 color: COLORS.accentText,
-                fontSize: 18,
-                fontWeight: 700,
+                fontSize: 16,
+                fontWeight: 800,
                 border: "none",
                 cursor: loading ? "default" : "pointer",
-                boxShadow: `0 12px 28px ${COLORS.shadow}`,
-                letterSpacing: 0.2,
+                boxShadow: `0 10px 24px ${COLORS.shadow}`,
               }}
             >
               {loading ? "Updating..." : "Update"}
@@ -305,9 +269,10 @@ export default function BindWallet() {
         </div>
       </div>
 
-      {/* Toast Message */}
+      {/* Success Toast */}
       {showToast && (
         <div
+          role="status"
           style={{
             position: "fixed",
             bottom: 18,
@@ -315,87 +280,15 @@ export default function BindWallet() {
             transform: "translateX(-50%)",
             background: COLORS.success,
             color: "#fff",
-            padding: "10px 16px",
+            padding: "10px 14px",
             borderRadius: 8,
             fontWeight: 700,
-            boxShadow: "0 6px 18px rgba(0,0,0,0.12)",
+            boxShadow: "0 6px 18px rgba(0,0,0,0.18)",
             zIndex: 80,
           }}
-          role="status"
         >
           ✅ Wallet updated successfully!
         </div>
-      )}
-
-      {/* Bottom sheet overlay + sheet */}
-      {(showNetworkSheet || sheetClosing) && (
-        <>
-          {/* Overlay */}
-          <div
-            onClick={closeSheet}
-            style={{
-              position: "fixed",
-              inset: 0,
-              background: "rgba(0,0,0,0.55)", // dark overlay
-              zIndex: 70,
-            }}
-          />
-
-          {/* Sheet: mount while opening or closing so we can animate */}
-          <div
-            role="dialog"
-            aria-modal="true"
-            style={{
-              position: "fixed",
-              left: 12,
-              right: 12,
-              bottom: 12,
-              zIndex: 80,
-              // We use transform for the slide animation:
-              transform: sheetClosing ? "translateY(110%)" : showNetworkSheet ? "translateY(0%)" : "translateY(110%)",
-              transition: "transform 220ms cubic-bezier(.2,.9,.2,1)",
-              background: COLORS.panelBg,
-              borderTopLeftRadius: 14,
-              borderTopRightRadius: 14,
-              paddingTop: 8,
-              paddingBottom: 18,
-              boxShadow: `0 -12px 36px ${COLORS.shadow}`,
-              maxWidth: 820,
-              margin: "0 auto",
-              overflow: "hidden",
-            }}
-          >
-            <div style={{ padding: "8px 8px" }}>
-              {networkOptions.map((opt) => (
-                <button
-                  key={opt}
-                  onClick={() => {
-                    setNetwork(opt);
-                    // animate close
-                    setSheetClosing(true);
-                    setTimeout(() => {
-                      setSheetClosing(false);
-                      setShowNetworkSheet(false);
-                    }, 220);
-                  }}
-                  style={{
-                    width: "100%",
-                    background: "transparent",
-                    border: "none",
-                    textAlign: "center",
-                    padding: "14px 12px",
-                    fontSize: 18,
-                    fontWeight: 700,
-                    color: COLORS.text,
-                    cursor: "pointer",
-                  }}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-          </div>
-        </>
       )}
     </div>
   );
