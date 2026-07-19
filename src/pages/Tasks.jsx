@@ -219,7 +219,7 @@ export default function Tasks() {
 
       if (!token) return null;
 
-      const resp = await fetch("https://lumostra-admin.onrender.com/api/user-profile", {
+      const resp = await fetch("https://lumostra-admins.onrender.com/api/user-profile", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
