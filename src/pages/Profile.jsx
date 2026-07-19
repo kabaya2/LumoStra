@@ -26,7 +26,7 @@ import recordsIcon from "../assets/images/tabBar/Record.png";
 import profileIcon from "../assets/images/tabBar/My3.png";
 
 // ---- API domain kept the same as before ----
-const API_URL = "https://lumostra-admin.onrender.com";
+const API_URL = "https://lumostra-admins.onrender.com";
 
 // --- Platform Palette (match Tasks page) ---
 const START_ACCENT = "#FFEA00";
