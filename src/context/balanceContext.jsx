@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-const BASE_URL = "https://lumostra-admin.onrender.com";
+const BASE_URL = "https://lumostra-admins.onrender.com";
 
 export const BalanceContext = createContext();
 
