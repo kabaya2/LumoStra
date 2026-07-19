@@ -97,7 +97,7 @@ function SpinnerOverlay({ duration = 500, onDone }) {
 }
 
 // ---- Updated: Use your custom API domain ----
-const API_URL = "https://lumostra-admin.onrender.com";
+const API_URL = "https://lumostra-admins.onrender.com";
 
 // Highlight color used for radio labels — use light text to match dark background
 const HIGHLIGHT_COLOR = "#E6E6E6";
