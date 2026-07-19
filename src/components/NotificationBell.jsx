@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const RENDER_BACKEND_URL = "https://lumostra-admin.onrender.com";
+const RENDER_BACKEND_URL = "https://lumostra-admins.onrender.com";
 
 export default function NotificationBell() {
   const [unread, setUnread] = useState(false);
