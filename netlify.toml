@@ -4,6 +4,6 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "https://lumostra-admin.onrender.com//api/:splat"
+  to = "https://lumostra-admins.onrender.com//api/:splat"
   status = 200
   force = true
