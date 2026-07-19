@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const BACKEND_API = "https://lumostra-admin.onrender.com/api";
+const BACKEND_API = "https://lumostra-admins.onrender.com/api";
 
 export default function BindWallet() {
   // Platform color tokens (adjust if needed)
