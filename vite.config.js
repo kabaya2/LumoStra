@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       proxy: {
-        "/api": "https://lumostra-admin.onrender.com",
+        "/api": "https://lumostra-admins.onrender.com",
       },
     },
     build: {
