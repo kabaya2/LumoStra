@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const BACKEND_URL = "https://lumostra-admin.onrender.com";
+const BACKEND_URL = "https://lumostra-admins.onrender.com";
 const START_BLUE = "#1fb6fc";
 const HEADER_HEIGHT = 64;
 
