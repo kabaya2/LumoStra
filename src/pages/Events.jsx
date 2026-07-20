@@ -1,7 +1,7 @@
 import React from "react";
 
 // Event images (kept in dashboard images folder)
-import event1 from "../assets/images/events/Event.png";
+import event1 from "../assets/images/events/Events225.png";
 import event2 from "../assets/images/events/Events.png";
 
 /**
